@@ -2,4 +2,8 @@
 
 set -euo pipefail
 
-echo "BUILDKITE_PLUGIN_SMOOTH_GIT_MODE is $BUILDKITE_PLUGIN_SMOOTH_GIT_MODE"
+if [[ "$BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_SKIP_CHECKOUT" == "true" ]]; then
+    echo "--- :fast_forward: skipping checkout"
+    echo "Because 'skip_checkout' configuration was set as true in pipeline YAML"
+    exit 0
+fi

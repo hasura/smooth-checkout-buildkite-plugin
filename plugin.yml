@@ -1,9 +1,9 @@
-name: Smooth Git
-description: Set up Git projects smoothly on Buildkite
+name: Smooth Checkout
+description: All the things you need during a Buildkite checkout
 author: https://github.com/hasura
 requirements: []
 configuration:
   properties:
-    mode:
-      type: string
+    skip_checkout:
+      type: boolean
   additionalProperties: false
