@@ -4,6 +4,6 @@ author: https://github.com/hasura
 requirements: []
 configuration:
   properties:
-    mode:
-      type: string
+    skip_checkout:
+      type: boolean
   additionalProperties: false
