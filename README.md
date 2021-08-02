@@ -1,2 +1,2 @@
 # Smooth Git
-Set up Git projects smoothly on buildkite :butter: :kite:
+Set up Git projects smoothly on Buildkite :butter: :kite:
