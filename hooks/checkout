@@ -3,6 +3,6 @@
 set -euo pipefail
 
 if [[ "$BUILDKITE_PLUGIN_SMOOTH_GIT_SKIP_CHECKOUT" == "true" ]]; then
-    echo ":fast_forward: skipping checkout"
+    echo -e ":fast_forward: skipping checkout"
     exit 0
 fi
