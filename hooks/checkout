@@ -1,0 +1,5 @@
+#!/bin/bash
+
+set -euo pipefail
+
+echo "BUILDKITE_PLUGIN_SMOOTH_GIT_MODE is $BUILDKITE_PLUGIN_SMOOTH_GIT_MODE"
