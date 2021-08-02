@@ -1,8 +1,6 @@
 # Smooth Checkout
 All the things you need during a Buildkite checkout :butter: :kite:
 
-# Usage
-
 ## Repository-less builds
 ```yml
 steps:
