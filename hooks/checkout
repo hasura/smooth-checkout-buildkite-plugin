@@ -1,8 +1,8 @@
 #!/bin/bash
 
-set -e
+set -euo pipefail
 
-if [[ "$BUILDKITE_PLUGIN_SMOOTH_GIT_SKIP_CHECKOUT" == "true" ]]; then
+if [[ "$BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_SKIP_CHECKOUT" == "true" ]]; then
     echo "--- :fast_forward: skipping checkout"
     echo "Because 'skip_checkout' configuration was set as true in pipeline YAML"
     exit 0
