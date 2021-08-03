@@ -11,7 +11,7 @@ load '/usr/local/lib/bats/load.bash'
   run "$PWD/hooks/checkout"
 
   assert_success
-  assert_output "--- :fast_forward: skipping checkout
+  assert_output "--- :fast_forward: Skipping checkout
 Because 'skip_checkout' configuration was set as true in pipeline YAML"
 
   unset BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_SKIP_CHECKOUT
