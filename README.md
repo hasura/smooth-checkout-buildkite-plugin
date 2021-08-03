@@ -6,6 +6,6 @@ All the things you need during a Buildkite checkout :butter: :kite:
 steps:
   - command: echo "Skips checking out Git project in checkout" 
     plugins:
-      - hasura/smooth-checkout#main:
+      - hasura/smooth-checkout#v1.0.0:
           skip_checkout: true
 ```
