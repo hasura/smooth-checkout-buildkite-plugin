@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -euo pipefail
 
@@ -7,3 +7,8 @@ if [[ "$BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_SKIP_CHECKOUT" == "true" ]]; then
     echo "Because 'skip_checkout' configuration was set as true in pipeline YAML"
     exit 0
 fi
+
+CHECKOUT_DIR="$HOME/buildkite-checkouts/$BUILDKITE_BUILD_ID/$BUILDKITE_JOB_ID"
+echo "Creating checkout directory $CHECKOUT_DIR ..."
+mkdir -p "$CHECKOUT_DIR" && cd "$CHECKOUT_DIR"
+echo "Setup done!"
