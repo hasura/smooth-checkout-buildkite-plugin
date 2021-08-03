@@ -1,0 +1,11 @@
+version: "3.5"
+services:
+  lint:
+    image: buildkite/plugin-linter
+    command: ['--id', 'hasura/smooth-checkout']
+    volumes:
+      - .:/plugin:ro
+  tests:
+    image: buildkite/plugin-tester
+    volumes:
+      - .:/plugin:ro

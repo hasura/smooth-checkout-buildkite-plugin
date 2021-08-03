@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-set -euo pipefail
+set -eo pipefail
 
 CHECKOUT_DIR="$HOME/buildkite-checkouts/$BUILDKITE_BUILD_ID/$BUILDKITE_JOB_ID"
 if [ -d "$CHECKOUT_DIR" ]; then
     echo "Removing checkout directory $CHECKOUT_DIR ..."
-    rm -r "$CHEKOUT_DIR"
+    rm -r "$CHECKOUT_DIR"
 fi
 echo "Cleanup done!"
