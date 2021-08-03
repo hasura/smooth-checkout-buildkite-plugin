@@ -2,9 +2,9 @@
 
 set -eo pipefail
 
-CHECKOUT_DIR="$HOME/buildkite-checkouts/$BUILDKITE_BUILD_ID/$BUILDKITE_JOB_ID"
-if [ -d "$CHECKOUT_DIR" ]; then
-    echo "Removing checkout directory $CHECKOUT_DIR ..."
-    rm -r "$CHECKOUT_DIR"
+WORKSPACE="$HOME/buildkite-checkouts/$BUILDKITE_BUILD_ID/$BUILDKITE_JOB_ID"
+if [ -d "$WORKSPACE" ]; then
+    echo "Cleaning up workspace $WORKSPACE ..."
+    rm -r "$WORKSPACE"
 fi
 echo "Cleanup done!"

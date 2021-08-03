@@ -21,11 +21,11 @@ Because 'skip_checkout' configuration was set as true in pipeline YAML"
   export BUILDKITE_BUILD_ID="test-build-id"
   export BUILDKITE_JOB_ID="test-job-id"
 
-  TEST_CHECKOUT_DIR="$HOME/buildkite-checkouts/$BUILDKITE_BUILD_ID/$BUILDKITE_JOB_ID"
+  TEST_WORKSPACE="$HOME/buildkite-checkouts/$BUILDKITE_BUILD_ID/$BUILDKITE_JOB_ID"
 
   run "$PWD/hooks/checkout"
 
   assert_success
-  assert [ -d "$TEST_CHECKOUT_DIR" ]
+  assert [ -d "$TEST_WORKSPACE" ]
 }
 

@@ -8,7 +8,8 @@ if [[ "$BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_SKIP_CHECKOUT" == "true" ]]; then
     exit 0
 fi
 
-CHECKOUT_DIR="$HOME/buildkite-checkouts/$BUILDKITE_BUILD_ID/$BUILDKITE_JOB_ID"
-echo "Creating checkout directory $CHECKOUT_DIR ..."
-mkdir -p "$CHECKOUT_DIR" && cd "$CHECKOUT_DIR"
+WORKSPACE="$HOME/buildkite-checkouts/$BUILDKITE_BUILD_ID/$BUILDKITE_JOB_ID"
+echo "--- :open_file_folder: setting up workspace"
+echo "Creating workspace $WORKSPACE ..."
+mkdir -p "$WORKSPACE" && cd "$WORKSPACE"
 echo "Setup done!"
