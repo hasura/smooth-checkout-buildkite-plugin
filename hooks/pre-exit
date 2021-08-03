@@ -4,7 +4,8 @@ set -eo pipefail
 
 WORKSPACE="$HOME/buildkite-checkouts/$BUILDKITE_BUILD_ID/$BUILDKITE_JOB_ID"
 if [ -d "$WORKSPACE" ]; then
-    echo "Cleaning up workspace $WORKSPACE ..."
+    echo "--- Cleaning up workspace"
+    echo "Removing directory: $WORKSPACE"
     rm -r "$WORKSPACE"
 fi
 echo "Cleanup done!"

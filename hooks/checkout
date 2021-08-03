@@ -10,6 +10,6 @@ fi
 
 WORKSPACE="$HOME/buildkite-checkouts/$BUILDKITE_BUILD_ID/$BUILDKITE_JOB_ID"
 echo "--- :open_file_folder: setting up workspace"
-echo "Creating workspace $WORKSPACE ..."
+echo "Creating directory: $WORKSPACE"
 mkdir -p "$WORKSPACE" && cd "$WORKSPACE"
 echo "Setup done!"
