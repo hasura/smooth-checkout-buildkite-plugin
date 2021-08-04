@@ -14,4 +14,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: run linter
-        run: docker-compose run --rm lint
+        run: |
+          docker-compose run --rm lint
+          docker run --rm -v "$PWD:/mnt" koalaman/shellcheck:stable hooks/*
