@@ -16,6 +16,7 @@ mkdir -p "$WORKSPACE" && cd "$WORKSPACE"
 
 # setup git to use ssh instead of https
 git config --global url."ssh://git@github.com".insteadOf "https://github.com"
+mkdir "$HOME/.ssh" && ssh-keyscan -t rsa github.com >> "$HOME/.ssh/known_hosts"
 
 CLONE_URL=${BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_CLONE_URL:-$BUILDKITE_REPO}
 echo "Cloning repository: $CLONE_URL"

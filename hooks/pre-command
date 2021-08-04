@@ -5,3 +5,5 @@ set -e
 echo "--- :house_with_garden: Setting up environment"
 export WORKSPACE="$HOME/buildkite-checkouts/$BUILDKITE_BUILD_ID/$BUILDKITE_JOB_ID"
 echo "WORKSPACE=$WORKSPACE"
+export SSH_AUTH_SOCK="$HOME/.ssh/ssh-agent.sock"
+echo "SSH_AUTH_SOCK=$SSH_AUTH_SOCK"

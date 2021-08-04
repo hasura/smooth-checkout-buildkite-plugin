@@ -23,6 +23,7 @@ Because 'skip_checkout' configuration was set as true in pipeline YAML"
   TEST_WORKSPACE="$HOME/buildkite-checkouts/$BUILDKITE_BUILD_ID/$BUILDKITE_JOB_ID"
 
   stub git
+  stub ssh-keyscan
   run "$PWD/hooks/checkout"
 
   assert_success
