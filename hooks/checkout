@@ -8,8 +8,23 @@ if [[ "$BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_SKIP_CHECKOUT" == "true" ]]; then
     exit 0
 fi
 
-WORKSPACE="$HOME/buildkite-checkouts/$BUILDKITE_BUILD_ID/$BUILDKITE_JOB_ID"
 echo "--- :open_file_folder: Setting up workspace"
+
+WORKSPACE="$HOME/buildkite-checkouts/$BUILDKITE_BUILD_ID/$BUILDKITE_JOB_ID"
 echo "Creating directory: $WORKSPACE"
 mkdir -p "$WORKSPACE" && cd "$WORKSPACE"
+
+# setup git to use ssh instead of https
+git config --global url."ssh://git@github.com".insteadOf "https://github.com"
+
+CLONE_URL=${BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_CLONE_URL:-$BUILDKITE_REPO}
+echo "Cloning repository: $CLONE_URL"
+git clone --no-checkout "$CLONE_URL" .
+
+REF=${BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_CLONE_URL:-$BUILDKITE_BRANCH}
+echo "Checking out ref: $REF"
+git fetch --force "$REF:refs/local/$REF"
+git checkout --quiet --force "refs/local/$REF"
+git log -n 1 --format="HEAD is now at %h %s"
+
 echo "Setup completed successfully."
