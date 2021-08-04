@@ -1,7 +1,9 @@
 # Smooth Checkout
 All the things you need during a Buildkite checkout :butter: :kite:
 
-## Repository-less builds
+## Usage
+
+### Repository-less builds
 ```yml
 steps:
   - command: echo "Skips checking out Git project in checkout" 
@@ -9,6 +11,20 @@ steps:
       - hasura/smooth-checkout#v1.0.0:
           skip_checkout: true
 ```
+
+### Checking out repo
+```yml
+steps:
+  - command: echo "Checks out repo at given ref"
+    plugins:
+      - hasura/smooth-checkout#v1.0.0:
+          clone_url: https://github.com/<username>/<reponame>
+          ref: <ref>
+```
+Allowed values for `ref`:
+- Branch name
+- Git tag
+- Commit SHA(40 character long hash)
 
 ## Setup & Cleanup
 Smooth Checkout setups a workspace directory for your jobs in a non-conflicting fashion. By default, Buildkite uses `HOME/builds/<HOSTNAME>/<PIPELINE_SLUG>` as checkout directory. If `parallelism` is set in the step, then parallel jobs might conflict in the checkout stage if build is running on the same host machine.
