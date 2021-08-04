@@ -7,7 +7,7 @@ services:
       - .:/plugin:ro
   lint-shellcheck:
     image: koalaman/shellcheck:stable
-    command: shellcheck hooks/*
+    command: ["hooks/*"]
     volumes:
       - .:/mnt:ro
   tests:
