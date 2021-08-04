@@ -5,11 +5,6 @@ services:
     command: ['--id', 'hasura/smooth-checkout']
     volumes:
       - .:/plugin:ro
-  lint-shellcheck:
-    image: koalaman/shellcheck:stable
-    command: ["hooks/*"]
-    volumes:
-      - .:/mnt:ro
   tests:
     image: buildkite/plugin-tester
     volumes:

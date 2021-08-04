@@ -16,4 +16,4 @@ jobs:
       - name: run linter
         run: |
           docker-compose run --rm lint
-          docker-compose run --rm lint-shellcheck
+          docker run --rm -v "$PWD:/mnt" koalaman/shellcheck:stable hooks/*
