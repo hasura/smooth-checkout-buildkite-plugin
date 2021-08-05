@@ -22,7 +22,7 @@ CLONE_URL=${BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_CLONE_URL:-$BUILDKITE_REPO}
 echo "Cloning repository: $CLONE_URL"
 git clone --no-checkout "$CLONE_URL" "$WORKSPACE/"
 
-REF=${BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_CLONE_URL:-$BUILDKITE_BRANCH}
+REF=${BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_REF:-$BUILDKITE_BRANCH}
 echo "Checking out ref: $REF"
 git fetch --force "$REF:refs/local/$REF"
 git checkout --quiet --force "refs/local/$REF"
