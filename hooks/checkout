@@ -24,7 +24,7 @@ git clone --no-checkout "$CLONE_URL" "$WORKSPACE/"
 
 REF=${BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_REF:-$BUILDKITE_BRANCH}
 echo "Checking out ref: $REF"
-git fetch --force "$REF:refs/local/$REF"
+git fetch --force origin "$REF:refs/local/$REF"
 git checkout --quiet --force "refs/local/$REF"
 git log -n 1 --format="HEAD is now at %h %s"
 
