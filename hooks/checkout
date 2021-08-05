@@ -21,7 +21,7 @@ echo "$PWD"
 
 CLONE_URL=${BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_CLONE_URL:-$BUILDKITE_REPO}
 echo "Cloning repository: $CLONE_URL"
-git clone --no-checkout "$CLONE_URL" "$WORKSPACE/"
+git clone --no-checkout "$CLONE_URL"
 
 REF=${BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_REF:-$BUILDKITE_BRANCH}
 echo "Checking out ref: $REF"
