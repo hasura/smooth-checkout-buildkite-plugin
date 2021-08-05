@@ -17,6 +17,7 @@ mkdir -p "$HOME/.ssh" && ssh-keyscan -t rsa github.com >> "$HOME/.ssh/known_host
 WORKSPACE="$HOME/buildkite-checkouts/$BUILDKITE_BUILD_ID/$BUILDKITE_JOB_ID"
 echo "Creating directory: $WORKSPACE"
 mkdir -p "$WORKSPACE" && cd "$WORKSPACE"
+echo "$PWD"
 
 CLONE_URL=${BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_CLONE_URL:-$BUILDKITE_REPO}
 echo "Cloning repository: $CLONE_URL"
