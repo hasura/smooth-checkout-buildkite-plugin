@@ -14,14 +14,16 @@ echo "Creating directory: $WORKSPACE"
 mkdir -p "$WORKSPACE" && cd "$WORKSPACE"
 echo "Setup completed successfully."
 
-echo "--- :git: Checking out repository"
 
-echo "Setting up git and ssh..."
+echo "--- :key: Setting up git and ssh"
 mkdir -p "$HOME/.ssh" && ssh-keyscan -t rsa github.com >> "$HOME/.ssh/known_hosts"
 
+echo "--- :git: Checking out repository"
 CLONE_URL=${BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_CLONE_URL:-$BUILDKITE_REPO}
-echo "Cloning repository: $CLONE_URL"
-git clone --no-checkout "$CLONE_URL" && cd "$(echo "${CLONE_URL%/}" | awk -F '/' '{ print $NF }')"
+CLONE_DIR=$(echo "${CLONE_URL%/}" | awk -F '/' '{ print $NF }' | sed -e "s/\.git$//")
+
+echo "Cloning repository: $CLONE_URL at $(pwd)/$CLONE_DIR"
+git clone --no-checkout "$CLONE_URL" && cd "$CLONE_DIR"
 
 REF=${BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_REF:-$BUILDKITE_BRANCH}
 echo "Checking out ref: $REF"
