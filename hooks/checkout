@@ -18,13 +18,15 @@ echo "Setup completed successfully."
 echo "--- :key: Setting up git and ssh"
 if ! ssh-keygen -F github.com > /dev/null; then
   echo "github.com not found in known_hosts"
-  mkdir -p /tmp && ssh-keyscan -t rsa github.com > /tmp/github_rsa.pub
-  GH_PUBKEY_FINGERPRINT="$(ssh-keygen -lf /tmp/github_rsa.pub | awk '{ print $2 }')"
+  mkdir -p /tmp
+  TMP_FILE="$(mktemp /tmp/github_rsa_XXXXXX.pub)"
+  ssh-keyscan -t rsa github.com > "$TMP_FILE"
+  GH_PUBKEY_FINGERPRINT="$(ssh-keygen -lf "$TMP_FILE" | awk '{ print $2 }')"
   if [ "$GH_PUBKEY_FINGERPRINT" != "SHA256:nThbg6kXUpJWGl7E1IGOCspRomTxdCARLviKw6E5SY8" ]; then
     echo "FATAL: got wrong public key from keyscan"
     exit 1
   fi
-  mkdir -p $HOME/.ssh cat /tmp/github_pub.rsa >> $HOME/.ssh/known_hosts
+  mkdir -p "$HOME/.ssh" && cat "$TMP_FILE" >> "$HOME/.ssh/known_hosts" && rm "$TMP_FILE"
   echo "github.com added to known_hosts"
 fi
 
