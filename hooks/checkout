@@ -19,7 +19,7 @@ echo "--- :key: Setting up git and ssh"
 if ! ssh-keygen -F github.com > /dev/null; then
   echo "github.com not found in known_hosts"
   mkdir -p /tmp
-  TMP_FILE="$(mktemp /tmp/github_rsa_XXXXXX.pub)"
+  TMP_FILE="$(mktemp /tmp/github_rsa.pub.XXXXXX)"
   ssh-keyscan -t rsa github.com > "$TMP_FILE"
   GH_PUBKEY_FINGERPRINT="$(ssh-keygen -lf "$TMP_FILE" | awk '{ print $2 }')"
   if [ "$GH_PUBKEY_FINGERPRINT" != "SHA256:nThbg6kXUpJWGl7E1IGOCspRomTxdCARLviKw6E5SY8" ]; then
