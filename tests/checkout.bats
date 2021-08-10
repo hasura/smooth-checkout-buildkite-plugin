@@ -24,6 +24,7 @@ Because 'skip_checkout' configuration was set as true in pipeline YAML"
 
   stub git
   stub ssh-keyscan
+  stub ssh-keygen
   run "$PWD/hooks/checkout"
 
   assert_success
