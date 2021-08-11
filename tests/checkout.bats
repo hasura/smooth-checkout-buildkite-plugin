@@ -1,5 +1,4 @@
 #!/usr/bin/env bats
-
 load '/usr/local/lib/bats/load.bash'
 
 # Uncomment the following line to debug stub failures
@@ -23,9 +22,11 @@ Because 'skip_checkout' configuration was set as true in pipeline YAML"
 
   TEST_WORKSPACE="$HOME/buildkite-checkouts/$BUILDKITE_BUILD_ID/$BUILDKITE_JOB_ID"
 
+  stub git
+  stub ssh-keyscan
+  stub ssh-keygen
   run "$PWD/hooks/checkout"
 
   assert_success
   assert [ -d "$TEST_WORKSPACE" ]
 }
-

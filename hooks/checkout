@@ -8,8 +8,38 @@ if [[ "$BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_SKIP_CHECKOUT" == "true" ]]; then
     exit 0
 fi
 
-WORKSPACE="$HOME/buildkite-checkouts/$BUILDKITE_BUILD_ID/$BUILDKITE_JOB_ID"
 echo "--- :open_file_folder: Setting up workspace"
+WORKSPACE="$HOME/buildkite-checkouts/$BUILDKITE_BUILD_ID/$BUILDKITE_JOB_ID"
 echo "Creating directory: $WORKSPACE"
 mkdir -p "$WORKSPACE" && cd "$WORKSPACE"
 echo "Setup completed successfully."
+
+
+echo "--- :key: Setting up git and ssh"
+if ! ssh-keygen -F github.com > /dev/null; then
+  echo "github.com not found in known_hosts"
+  mkdir -p /tmp
+  TMP_FILE="$(mktemp /tmp/github_rsa.pub.XXXXXX)"
+  ssh-keyscan -t rsa github.com > "$TMP_FILE"
+  GH_PUBKEY_FINGERPRINT="$(ssh-keygen -lf "$TMP_FILE" | awk '{ print $2 }')"
+  if [ "$GH_PUBKEY_FINGERPRINT" != "SHA256:nThbg6kXUpJWGl7E1IGOCspRomTxdCARLviKw6E5SY8" ]; then
+    echo "FATAL: got wrong public key from keyscan"
+    exit 1
+  fi
+  mkdir -p "$HOME/.ssh" && cat "$TMP_FILE" >> "$HOME/.ssh/known_hosts" && rm "$TMP_FILE"
+  echo "github.com added to known_hosts"
+fi
+
+echo "--- :git: Checking out repository"
+CLONE_URL=${BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_CLONE_URL:-$BUILDKITE_REPO}
+CLONE_DIR=$(echo "${CLONE_URL%/}" | awk -F '/' '{ print $NF }' | sed -e "s/\.git$//")
+
+echo "Cloning repository: $CLONE_URL at $(pwd)/$CLONE_DIR"
+git clone --no-checkout "$CLONE_URL" && cd "$CLONE_DIR"
+
+REF=${BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_REF:-$BUILDKITE_BRANCH}
+echo "Checking out ref: $REF"
+git fetch --force origin "$REF:refs/local/$REF"
+git checkout --quiet --force "refs/local/$REF"
+git log -n 1 --format="Repo checked out at %h %s"
+
