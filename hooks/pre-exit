@@ -13,7 +13,7 @@ if [ -d "$WORKSPACE/$CLONE_DIR" ]; then
     unset CLONE_URL
 fi
 
-if [ -z "$(ls -A "$WORKSPACE")" ]; then
+if [ -d "$WORKSPACE" ] && [ -z "$(ls -A "$WORKSPACE")" ]; then
   echo "Removing workspace directory: $WORKSPACE"
   rmdir "$WORKSPACE"
 fi
