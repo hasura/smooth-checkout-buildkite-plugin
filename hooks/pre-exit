@@ -8,7 +8,7 @@ printenv
 echo "--- :broom: Cleaning up workspace"
 if [ -d "$WORKSPACE/$CLONE_DIR" ]; then
     echo "Removing directory: $WORKSPACE/$CLONE_DIR"
-    rm -r "$WORKSPACE/$CLONE_DIR"
+    sudo rm -r "$WORKSPACE/$CLONE_DIR"
     unset "$CLONE_DIR"
     unset "$CLONE_URL"
 fi
