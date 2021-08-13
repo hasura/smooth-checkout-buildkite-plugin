@@ -2,6 +2,9 @@
 
 set -eo pipefail
 
+echo "$WORKSPACE"
+echo "$CLONE_DIR"
+printenv
 echo "--- :broom: Cleaning up workspace"
 if [ -d "$CLONE_DIR" ]; then
     echo "Removing directory: $CLONE_DIR"
