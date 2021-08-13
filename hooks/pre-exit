@@ -2,12 +2,15 @@
 
 set -eo pipefail
 
-WORKSPACE="$HOME/buildkite-checkouts/$BUILDKITE_BUILD_ID/$BUILDKITE_JOB_ID"
-CLONE_URL="${BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_CLONE_URL:-$BUILDKITE_REPO}"
-CLONE_DIR="${WORKSPACE}/$(echo "${CLONE_URL%/}" | awk -F '/' '{ print $NF }')"
+echo "--- :broom: Cleaning up workspace"
 if [ -d "$CLONE_DIR" ]; then
-    echo "--- :broom: Cleaning up workspace"
     echo "Removing directory: $CLONE_DIR"
     rm -r "$CLONE_DIR"
+    unset "$CLONE_DIR"
+    unset "$CLONE_URL"
+fi
+
+if [ -z "$(ls -A "$WORKSPACE")" ]; then
+  rmdir "$WORKSPACE"
 fi
 echo "Cleanup completed successfully."
