@@ -2,19 +2,16 @@
 
 set -eo pipefail
 
-echo "$WORKSPACE"
-echo "$CLONE_DIR"
-printenv
 echo "--- :broom: Cleaning up workspace"
+echo "Removing directory: $WORKSPACE/$CLONE_DIR"
 if [ -d "$WORKSPACE/$CLONE_DIR" ]; then
-    echo "Removing directory: $WORKSPACE/$CLONE_DIR"
-    sudo rm -r "$WORKSPACE/$CLONE_DIR"
-    unset CLONE_DIR
-    unset CLONE_URL
+  sudo rm -r "$WORKSPACE/$CLONE_DIR"
+  unset CLONE_DIR
+  unset CLONE_URL
 fi
 
+echo "Removing workspace directory: $WORKSPACE"
 if [ -d "$WORKSPACE" ] && [ -z "$(ls -A "$WORKSPACE")" ]; then
-  echo "Removing workspace directory: $WORKSPACE"
   rmdir "$WORKSPACE"
 fi
 echo "Cleanup completed successfully."
