@@ -6,14 +6,15 @@ echo "$WORKSPACE"
 echo "$CLONE_DIR"
 printenv
 echo "--- :broom: Cleaning up workspace"
-if [ -d "$CLONE_DIR" ]; then
-    echo "Removing directory: $CLONE_DIR"
-    rm -r "$CLONE_DIR"
+if [ -d "$WORKSPACE/$CLONE_DIR" ]; then
+    echo "Removing directory: $WORKSPACE/$CLONE_DIR"
+    rm -r "$WORKSPACE/$CLONE_DIR"
     unset "$CLONE_DIR"
     unset "$CLONE_URL"
 fi
 
 if [ -z "$(ls -A "$WORKSPACE")" ]; then
+  echo "Removing workspace directory: $WORKSPACE"
   rmdir "$WORKSPACE"
 fi
 echo "Cleanup completed successfully."
