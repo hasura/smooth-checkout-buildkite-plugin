@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-
-set -e
-
-export SSH_AUTH_SOCK=/root/.ssh/ssh-agent.sock
-echo $SSH_AUTH_SOCK
