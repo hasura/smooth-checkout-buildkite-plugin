@@ -9,8 +9,8 @@ echo "--- :broom: Cleaning up workspace"
 if [ -d "$WORKSPACE/$CLONE_DIR" ]; then
     echo "Removing directory: $WORKSPACE/$CLONE_DIR"
     sudo rm -r "$WORKSPACE/$CLONE_DIR"
-    unset "$CLONE_DIR"
-    unset "$CLONE_URL"
+    unset CLONE_DIR
+    unset CLONE_URL
 fi
 
 if [ -z "$(ls -A "$WORKSPACE")" ]; then
