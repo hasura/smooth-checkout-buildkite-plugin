@@ -21,6 +21,8 @@ steps:
           clone_url: https://github.com/<username>/<reponame>
           ref: <ref>
 ```
+If `clone_url` is not provided, the plugin uses the `BUILDKITE_REPO` env var's value as the target repo. Similarly, if `ref` is not provided the value of `BUILDKITE_BRANCH` env var is used.
+
 Allowed values for `ref`:
 - Branch name
 - Git tag
