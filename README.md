@@ -8,7 +8,7 @@ All the things you need during a Buildkite checkout :butter: :kite:
 steps:
   - command: echo "Skips checking out Git project in checkout" 
     plugins:
-      - hasura/smooth-checkout#v1.0.2:
+      - hasura/smooth-checkout#v1.0.3:
           skip_checkout: true
 ```
 
@@ -17,7 +17,7 @@ steps:
 steps:
   - command: echo "Checks out repo at given ref"
     plugins:
-      - hasura/smooth-checkout#v1.0.2:
+      - hasura/smooth-checkout#v1.0.3:
           clone_url: https://github.com/<username>/<reponame>
           ref: <ref>
 ```
