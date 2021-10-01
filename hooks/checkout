@@ -33,8 +33,15 @@ echo "--- :git: Checking out repository"
 echo "Cloning repository: $CLONE_URL at $(pwd)/$CLONE_DIR"
 git clone --no-checkout "$CLONE_URL" && cd "$CLONE_DIR"
 
-echo "Checking out ref: $CHECKOUT_REF"
-git fetch --force origin "$CHECKOUT_REF"
-git checkout --quiet --force "$CHECKOUT_REF"
+if [ -z "${CHECKOUT_REF}" ]; then
+  echo "Checking out branch: $BUILDKITE_BRANCH"
+  git fetch --force origin "$BUILDKITE_BRANCH"
+  git checkout --quiet --force "$BUILDKITE_BRANCH"
+  echo "Checking out commit: $BUILDKITE_COMMIT"
+  git reset --hard "$BUILDKITE_COMMIT"
+else
+  echo "Checking out ref: $CHECKOUT_REF"
+  git fetch --force origin "$CHECKOUT_REF"
+  git checkout --quiet --force "$CHECKOUT_REF"
+fi
 git log -n 1 --format="Repo checked out at %h %s"
-
