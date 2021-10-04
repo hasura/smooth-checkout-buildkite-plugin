@@ -6,10 +6,6 @@ configuration:
   properties:
     skip_checkout:
       type: boolean
-    clone_url:
-      type: string
-    clone_urls:
+    config:
       type: array
-    ref:
-      type: string
   additionalProperties: false
