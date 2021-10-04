@@ -23,7 +23,7 @@ steps:
               ref: <ref>
 ```
 
-If `ref` is not provided the value of `BUILDKITE_BRANCH` and `BUILDKITE_COMMIT` env vars are used.
+If `ref` is not provided the values of `BUILDKITE_BRANCH` and `BUILDKITE_COMMIT` env vars are used.
 
 Allowed values for `ref`:
 - Branch name
@@ -43,7 +43,7 @@ steps:
 ```
 
 ## Setup & Cleanup
-Smooth Checkout setups a workspace directory for your jobs in a non-conflicting fashion. Smooth Checkout overcomes this by setting up a workspace directory at `$HOME/buildkite-checkouts/$BUILDKITE_BUILD_ID/$BUILDKITE_JOB_ID`. The workspace path is made available as `WORKSPACE` environment variable in command section.
+Smooth Checkout sets up a workspace directory for your jobs in a non-conflicting fashion. Smooth Checkout achieves this by setting up a workspace directory at `$HOME/buildkite-checkouts/$BUILDKITE_BUILD_ID/$BUILDKITE_JOB_ID`. The workspace path is made available as `WORKSPACE` environment variable in command section.
 
 Smooth Checkout also takes care of cleaning up the workspace directory at the end of the Buildkite job.
 
