@@ -74,12 +74,16 @@ echo " :: clone location = $(pwd)/$CLONE_DIR"
 while true; do
   url="$(get_indirected_env "BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_CLONE_URLS_${i}_URL")"
   if [ -z "${url}" ]; then
-    break
+    if [[ $EXIT_STATUS -eq 0 ]]; then
+      break
+    else
+      exit $EXIT_STATUS
+    fi
   fi
 
   setup_git_repo "$url"
-
-  if [ -d "$(pwd)/$CLONE_DIR" ]; then
+  EXIT_STATUS=$?
+  if [[ $EXIT_STATUS -eq 0 ]]; then
     break
   fi
 
