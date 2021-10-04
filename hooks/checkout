@@ -41,8 +41,11 @@ setup_git_repo() {
   set +e
   local CLONE_URL="$1"
   local CHECKOUT_REF="$2"
-  echo " :::: git remote url = $CLONE_URL"
   local CLONE_DIR="$(echo "${CLONE_URL%/}" | awk -F '/' '{ print $NF }' | sed -e "s/\.git$//")"
+
+  echo " :::: local clone location = $CLONE_DIR"
+  echo " :::: git remote url = $CLONE_URL"
+
   git clone --no-checkout "$CLONE_URL" && cd "$CLONE_DIR"
   local EXIT_STATUS=$?
   if [[ $EXIT_STATUS -ne 0 ]]; then
@@ -71,8 +74,6 @@ setup_git_repo() {
 
 i=0
 echo "--- :git: Checking out repository"
-echo " :: clone location = $(pwd)/$CLONE_DIR"
-
 while true; do
   url="$(get_indirected_env "BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_CONFIG_${i}_URL")"
   ref="$(get_indirected_env "BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_CONFIG_${i}_REF")"
