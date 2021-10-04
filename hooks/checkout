@@ -34,14 +34,12 @@ get_indirected_env() {
   local env_name="$1"
 
   env_ref="${env_name}"
-  # do not change this echo
-  env_value="${!env_ref}"
   echo "${!env_ref}"
 }
 
 setup_git_repo() {
-  CLONE_URL="$1"
-  echo "Cloning repository: $CLONE_URL at $(pwd)/$CLONE_DIR"
+  local CLONE_URL="$1"
+  echo " :::: git remote url = $CLONE_URL"
   git clone --no-checkout "$CLONE_URL" && cd "$CLONE_DIR"
 
   if [ -z "${CHECKOUT_REF}" ]; then
@@ -60,6 +58,8 @@ setup_git_repo() {
 
 i=0
 echo "--- :git: Checking out repository"
+echo " :: clone location = $(pwd)/$CLONE_DIR"
+
 while true; do
   url="$(get_indirected_env "BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_CLONE_URLS_${i}_URL")"
   if [ -z "${url}" ]; then
@@ -67,6 +67,10 @@ while true; do
   fi
 
   setup_git_repo "$url"
+
+  if [ -d "$(pwd)/$CLONE_DIR" ]; then
+    break
+  fi
 
   i=$((i+=1))
 done
