@@ -26,7 +26,20 @@ If `clone_url` is not provided, the plugin uses the `BUILDKITE_REPO` env var's v
 Allowed values for `ref`:
 - Branch name
 - Git tag
-- Commit SHA(40 character long hash)
+- Commit SHA (40 character long hash)
+
+### Checking out from mirrors
+You can attempt to fetch a git repository from mirrors and fallback to using the original source repo in case of a failure while checking out from mirrors.
+```yaml
+steps:
+  - command: echo "Checks out repo at given ref"
+    plugins:
+      - hasura/smooth-checkout#v1.1.0:
+          clone_urls:
+            - url: git@mirror.git.interal:/path/to/git/mirror
+            - url: https://github.com/<username>/<reponame>
+          ref: <ref>
+```
 
 ## Setup & Cleanup
 Smooth Checkout setups a workspace directory for your jobs in a non-conflicting fashion. By default, Buildkite uses `HOME/builds/<HOSTNAME>/<PIPELINE_SLUG>` as checkout directory. If `parallelism` is set in the step, then parallel jobs might conflict in the checkout stage if build is running on the same host machine.
