@@ -8,7 +8,7 @@ All the things you need during a Buildkite checkout :butter: :kite:
 steps:
   - command: echo "Skips checking out Git project in checkout" 
     plugins:
-      - hasura/smooth-checkout#v1.1.0:
+      - hasura/smooth-checkout#v2.0.0:
           skip_checkout: true
 ```
 
@@ -17,34 +17,33 @@ steps:
 steps:
   - command: echo "Checks out repo at given ref"
     plugins:
-      - hasura/smooth-checkout#v1.1.0:
-          clone_url: https://github.com/<username>/<reponame>
-          ref: <ref>
+      - hasura/smooth-checkout#v2.0.0:
+          config:
+            - url: git@github.com:<username>/<reponame>.git
+              ref: <ref>
 ```
-If `clone_url` is not provided, the plugin uses the `BUILDKITE_REPO` env var's value as the target repo. Similarly, if `ref` is not provided the value of `BUILDKITE_BRANCH` env var is used.
+
+If `ref` is not provided the value of `BUILDKITE_BRANCH` and `BUILDKITE_COMMIT` env vars are used.
 
 Allowed values for `ref`:
 - Branch name
 - Git tag
 - Commit SHA (40 character long hash)
 
-### Checking out from mirrors
-You can attempt to fetch a git repository from mirrors and fallback to using the original source repo in case of a failure while checking out from mirrors.
+### Checking out repo from git mirrors
+You can attempt to fetch a git repository from git mirrors and fallback to using the original source repo in case of a failure while checking out from mirrors.
 ```yaml
 steps:
-  - command: echo "Checks out repo at given ref"
+  - command: echo "Checks out repo from mirror (fall back to github in case of failure)"
     plugins:
-      - hasura/smooth-checkout#v1.1.0:
-          clone_urls:
+      - hasura/smooth-checkout#v2.0.0:
+          config:
             - url: git@mirror.git.interal:/path/to/git/mirror
-            - url: https://github.com/<username>/<reponame>
-          ref: <ref>
+            - url: git@github.com:<username>/<reponame>.git
 ```
 
 ## Setup & Cleanup
-Smooth Checkout setups a workspace directory for your jobs in a non-conflicting fashion. By default, Buildkite uses `HOME/builds/<HOSTNAME>/<PIPELINE_SLUG>` as checkout directory. If `parallelism` is set in the step, then parallel jobs might conflict in the checkout stage if build is running on the same host machine.
-
-Smooth Checkout overcomes this by setting up a workspace directory at `$HOME/buildkite-checkouts/$BUILDKITE_BUILD_ID/$BUILDKITE_JOB_ID`. The workspace path is made available as `WORKSPACE` environment variable in command section.
+Smooth Checkout setups a workspace directory for your jobs in a non-conflicting fashion. Smooth Checkout overcomes this by setting up a workspace directory at `$HOME/buildkite-checkouts/$BUILDKITE_BUILD_ID/$BUILDKITE_JOB_ID`. The workspace path is made available as `WORKSPACE` environment variable in command section.
 
 Smooth Checkout also takes care of cleaning up the workspace directory at the end of the Buildkite job.
 
