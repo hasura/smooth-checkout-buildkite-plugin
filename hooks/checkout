@@ -41,7 +41,8 @@ setup_git_repo() {
   set +e
   local CLONE_URL="$1"
   local CHECKOUT_REF="$2"
-  local CLONE_DIR="$(echo "${CLONE_URL%/}" | awk -F '/' '{ print $NF }' | sed -e "s/\.git$//")"
+  local CLONE_DIR
+  CLONE_DIR="$(echo "${CLONE_URL%/}" | awk -F '/' '{ print $NF }' | sed -e "s/\.git$//")"
 
   echo " :::: local clone location = $CLONE_DIR"
   echo " :::: git remote url = $CLONE_URL"
