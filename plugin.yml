@@ -8,4 +8,12 @@ configuration:
       type: boolean
     config:
       type: array
+      items:
+        type: object
+        properties:
+          url:
+            type: string
+          ref:
+            type: string
+        additionalProperties: false
   additionalProperties: false
