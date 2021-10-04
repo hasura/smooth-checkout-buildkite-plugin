@@ -29,19 +29,44 @@ if ! ssh-keygen -F github.com > /dev/null; then
   echo "github.com added to known_hosts"
 fi
 
-echo "--- :git: Checking out repository"
-echo "Cloning repository: $CLONE_URL at $(pwd)/$CLONE_DIR"
-git clone --no-checkout "$CLONE_URL" && cd "$CLONE_DIR"
 
-if [ -z "${CHECKOUT_REF}" ]; then
-  echo "Checking out branch: $BUILDKITE_BRANCH"
-  git fetch --force origin "$BUILDKITE_BRANCH"
-  git checkout --quiet --force "$BUILDKITE_BRANCH"
-  echo "Checking out commit: $BUILDKITE_COMMIT"
-  git reset --hard "$BUILDKITE_COMMIT"
-else
-  echo "Checking out ref: $CHECKOUT_REF"
-  git fetch --force origin "$CHECKOUT_REF"
-  git checkout --quiet --force "$CHECKOUT_REF"
-fi
-git log -n 1 --format="Repo checked out at %h %s"
+get_indirected_env() {
+  local env_name="$1"
+
+  env_ref="${env_name}"
+  # do not change this echo
+  env_value="${!env_ref}"
+  echo "${!env_ref}"
+}
+
+setup_git_repo() {
+  CLONE_URL="$1"
+  echo "Cloning repository: $CLONE_URL at $(pwd)/$CLONE_DIR"
+  git clone --no-checkout "$CLONE_URL" && cd "$CLONE_DIR"
+
+  if [ -z "${CHECKOUT_REF}" ]; then
+    echo "Checking out branch: $BUILDKITE_BRANCH"
+    git fetch --force origin "$BUILDKITE_BRANCH"
+    git checkout --quiet --force "$BUILDKITE_BRANCH"
+    echo "Checking out commit: $BUILDKITE_COMMIT"
+    git reset --hard "$BUILDKITE_COMMIT"
+  else
+    echo "Checking out ref: $CHECKOUT_REF"
+    git fetch --force origin "$CHECKOUT_REF"
+    git checkout --quiet --force "$CHECKOUT_REF"
+  fi
+  git log -n 1 --format="Repo checked out at %h %s"
+}
+
+i=0
+echo "--- :git: Checking out repository"
+while true; do
+  url="$(get_indirected_env "BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_CLONE_URLS_${i}_URL")"
+  if [ -z "${url}" ]; then
+    break
+  fi
+
+  setup_git_repo "$url"
+
+  i=$((i+=1))
+done
