@@ -41,6 +41,7 @@ setup_git_repo() {
   set +e
   local CLONE_URL="$1"
   echo " :::: git remote url = $CLONE_URL"
+  local CLONE_DIR="$(echo "${CLONE_URL%/}" | awk -F '/' '{ print $NF }' | sed -e "s/\.git$//")"
   git clone --no-checkout "$CLONE_URL" && cd "$CLONE_DIR"
   local EXIT_STATUS=$?
   if [[ $EXIT_STATUS -ne 0 ]]; then
