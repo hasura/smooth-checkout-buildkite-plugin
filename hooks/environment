@@ -11,6 +11,3 @@ function set_env() {
 
 echo "--- :house_with_garden: Setting up environment"
 set_env WORKSPACE "$HOME/buildkite-checkouts/$BUILDKITE_BUILD_ID/$BUILDKITE_JOB_ID"
-set_env CLONE_URL "${BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_CLONE_URL:-$BUILDKITE_REPO}"
-set_env CLONE_DIR "$(echo "${CLONE_URL%/}" | awk -F '/' '{ print $NF }' | sed -e "s/\.git$//")"
-set_env CHECKOUT_REF "${BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_REF}"
