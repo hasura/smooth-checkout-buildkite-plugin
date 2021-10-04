@@ -8,6 +8,8 @@ configuration:
       type: boolean
     clone_url:
       type: string
+    clone_urls:
+      type: array
     ref:
       type: string
   additionalProperties: false
