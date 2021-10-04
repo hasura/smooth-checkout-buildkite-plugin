@@ -38,22 +38,33 @@ get_indirected_env() {
 }
 
 setup_git_repo() {
+  set +e
   local CLONE_URL="$1"
   echo " :::: git remote url = $CLONE_URL"
   git clone --no-checkout "$CLONE_URL" && cd "$CLONE_DIR"
+  local EXIT_STATUS=$?
+  if [[ $EXIT_STATUS -ne 0 ]]; then
+    return $EXIT_STATUS
+  fi
 
   if [ -z "${CHECKOUT_REF}" ]; then
-    echo "Checking out branch: $BUILDKITE_BRANCH"
-    git fetch --force origin "$BUILDKITE_BRANCH"
-    git checkout --quiet --force "$BUILDKITE_BRANCH"
-    echo "Checking out commit: $BUILDKITE_COMMIT"
-    git reset --hard "$BUILDKITE_COMMIT"
+    echo "Checking out branch: $BUILDKITE_BRANCH with $BUILDKITE_COMMIT"
+    git fetch --force origin "$BUILDKITE_BRANCH" && git checkout --quiet --force "$BUILDKITE_BRANCH" && git reset --hard "$BUILDKITE_COMMIT"
+    local EXIT_STATUS=$?
+    if [[ $EXIT_STATUS -ne 0 ]]; then
+      return $EXIT_STATUS
+    fi
   else
     echo "Checking out ref: $CHECKOUT_REF"
-    git fetch --force origin "$CHECKOUT_REF"
-    git checkout --quiet --force "$CHECKOUT_REF"
+    git fetch --force origin "$CHECKOUT_REF" && git checkout --quiet --force "$CHECKOUT_REF"
+    local EXIT_STATUS=$?
+    if [[ $EXIT_STATUS -ne 0 ]]; then
+      return $EXIT_STATUS
+    fi
   fi
+
   git log -n 1 --format="Repo checked out at %h %s"
+  set -e
 }
 
 i=0
