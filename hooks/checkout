@@ -47,6 +47,7 @@ setup_git_repo() {
   echo " :::: local clone location = $CLONE_DIR"
   echo " :::: git remote url = $CLONE_URL"
 
+  cd "$WORKSPACE"
   git clone --no-checkout "$CLONE_URL" && \
   cd "$CLONE_DIR"
   local EXIT_STATUS=$?
@@ -114,3 +115,5 @@ while true; do
   checkout_repo "$config_prefix"
   index=$((index+1))
 done
+
+cd "$WORKSPACE"
