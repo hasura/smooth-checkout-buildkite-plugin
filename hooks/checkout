@@ -118,7 +118,7 @@ while true; do
 done
 
 if [[ "$index" -eq 1 ]]; then
-  cd "${CHECKED_OUT_REPO_NAME}"
+  cd "${WORKSPACE}/${CHECKED_OUT_REPO_NAME}"
 else
   cd "$WORKSPACE"
 fi
