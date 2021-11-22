@@ -6,14 +6,24 @@ configuration:
   properties:
     skip_checkout:
       type: boolean
-    config:
+    repos:
       type: array
       items:
         type: object
         properties:
-          url:
-            type: string
-          ref:
-            type: string
+          config:
+            type: array
+            items:
+              type: object
+              properties:
+                url:
+                  type: string
+                ref:
+                  type: string
+              additionalProperties: false
+            required:
+              - url
         additionalProperties: false
+      required:
+        - config
   additionalProperties: false
