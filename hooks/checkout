@@ -37,7 +37,7 @@ get_indirected_env() {
 
 get_repo_name() {
   local repo_url="$1"
-  echo "$(echo "${CLONE_URL%/}" | awk -F '/' '{ print $NF }' | sed -e "s/\.git$//")"
+  echo "${repo_url%/}" | awk -F '/' '{ print $NF }' | sed -e "s/\.git$//"
 }
 
 setup_git_repo() {
