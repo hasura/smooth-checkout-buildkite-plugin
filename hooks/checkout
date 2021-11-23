@@ -110,7 +110,7 @@ PLUGIN_PREFIX="BUILDKITE_PLUGIN_SMOOTH_CHECKOUT"
 index=0
 while true; do
   config_prefix="${PLUGIN_PREFIX}_REPOS_${index}_CONFIG"
-  if [[ -z "$(get_indirected_env "${config_prefix}_0_URL")" || "$index" -gt 5 ]]; then
+  if [[ -z "$(get_indirected_env "${config_prefix}_0_URL")" ]]; then
     break
   fi
   checkout_repo "$config_prefix"
