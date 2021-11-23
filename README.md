@@ -31,11 +31,11 @@ Allowed values for `ref`:
 - Git tag
 - Commit SHA (40 character long hash)
 
-### Checking out multiple repos
+### Checking out multiple repositories
 You can checkout multiple repositories by providing multiple `config` elements:
 ```yaml
 steps:
-  - command: echo "Checks out repo from mirror (fall back to github in case of failure)"
+  - command: echo "Checks out multiple git repositories"
     plugins:
       - hasura/smooth-checkout#v3.0.0:
           repos:
