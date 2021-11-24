@@ -13,7 +13,6 @@ echo "Creating directory: $WORKSPACE"
 mkdir -p "$WORKSPACE" && cd "$WORKSPACE"
 echo "Setup completed successfully."
 
-
 echo "--- :key: Setting up git and ssh"
 if ! ssh-keygen -F github.com > /dev/null; then
   echo "github.com not found in known_hosts"
@@ -29,7 +28,6 @@ if ! ssh-keygen -F github.com > /dev/null; then
   echo "github.com added to known_hosts"
 fi
 
-
 get_indirected_env() {
   local env_name="$1"
 
@@ -37,16 +35,22 @@ get_indirected_env() {
   echo "${!env_ref}"
 }
 
+get_repo_name() {
+  local repo_url="$1"
+  echo "${repo_url%/}" | awk -F '/' '{ print $NF }' | sed -e "s/\.git$//"
+}
+
 setup_git_repo() {
   set +e
   local CLONE_URL="$1"
   local CHECKOUT_REF="$2"
   local CLONE_DIR
-  CLONE_DIR="$(echo "${CLONE_URL%/}" | awk -F '/' '{ print $NF }' | sed -e "s/\.git$//")"
+  CLONE_DIR="$(get_repo_name "${CLONE_URL}")"
 
   echo " :::: local clone location = $CLONE_DIR"
   echo " :::: git remote url = $CLONE_URL"
 
+  cd "$WORKSPACE"
   git clone --no-checkout "$CLONE_URL" && \
   cd "$CLONE_DIR"
   local EXIT_STATUS=$?
@@ -77,24 +81,44 @@ setup_git_repo() {
   set -e
 }
 
-i=0
-echo "--- :git: Checking out repository"
-while true; do
-  url="$(get_indirected_env "BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_CONFIG_${i}_URL")"
-  ref="$(get_indirected_env "BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_CONFIG_${i}_REF")"
-  if [ -z "${url}" ]; then
-    if [[ $EXIT_STATUS -eq 0 ]]; then
-      break
-    else
-      exit $EXIT_STATUS
-    fi
-  fi
+CHECKED_OUT_REPO_NAME=""
+checkout_repo() {
+  local config_prefix="$1"
+  local index=0
 
-  setup_git_repo "$url" "$ref"
-  EXIT_STATUS=$?
-  if [[ $EXIT_STATUS -eq 0 ]]; then
+  echo "--- :git: Checking out repository"
+  while true; do
+    url="$(get_indirected_env "${config_prefix}_${index}_URL")"
+    ref="$(get_indirected_env "${config_prefix}_${index}_REF")"
+    if [ -z "${url}" ]; then
+        exit 1
+    fi
+
+    setup_git_repo "$url" "$ref"
+    EXIT_STATUS=$?
+    if [[ $EXIT_STATUS -eq 0 ]]; then
+      CHECKED_OUT_REPO_NAME="$(get_repo_name "$url")"
+      break
+    fi
+
+    index=$((index+=1))
+  done
+}
+
+PLUGIN_PREFIX="BUILDKITE_PLUGIN_SMOOTH_CHECKOUT"
+
+index=0
+while true; do
+  config_prefix="${PLUGIN_PREFIX}_REPOS_${index}_CONFIG"
+  if [[ -z "$(get_indirected_env "${config_prefix}_0_URL")" ]]; then
     break
   fi
-
-  i=$((i+=1))
+  checkout_repo "$config_prefix"
+  index=$((index+1))
 done
+
+if [[ "$index" -eq 1 ]]; then
+  cd "${WORKSPACE}/${CHECKED_OUT_REPO_NAME}"
+else
+  cd "$WORKSPACE"
+fi
