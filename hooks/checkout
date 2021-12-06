@@ -50,6 +50,7 @@ setup_git_repo() {
 
   echo " :::: local clone location = $CLONE_DIR"
   echo " :::: git remote url = $CLONE_URL"
+  echo " :::: ssh key path = $SSH_KEY_PATH"
 
   cd "$WORKSPACE"
   if [[ -z "$SSH_KEY_PATH" ]]; then
