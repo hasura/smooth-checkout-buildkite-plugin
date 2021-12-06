@@ -52,14 +52,14 @@ setup_git_repo() {
   echo " :::: git remote url = $CLONE_URL"
   echo " :::: ssh key path = $SSH_KEY_PATH"
 
-  cd "$WORKSPACE"
-  if [[ -z "$SSH_KEY_PATH" ]]; then
-    git clone --no-checkout "$CLONE_URL" && \
-      cd "$CLONE_DIR"
-  else
-    GIT_SSH_COMMAND="ssh -i $SSH_KEY_PATH -o IdentitiesOnly=yes" git clone --no-checkout "$CLONE_URL" && \
-      cd "$CLONE_DIR"
+  if [[ -n "$SSH_KEY_PATH" ]]; then
+    GIT_SSH_COMMAND="ssh -i $SSH_KEY_PATH -o IdentitiesOnly=yes"
+    export GIT_SSH_COMMAND
   fi
+
+  cd "$WORKSPACE"
+  git clone --no-checkout "$CLONE_URL" && \
+    cd "$CLONE_DIR"
   local EXIT_STATUS=$?
   if [[ $EXIT_STATUS -ne 0 ]]; then
     return $EXIT_STATUS
@@ -83,6 +83,7 @@ setup_git_repo() {
       return $EXIT_STATUS
     fi
   fi
+  unset GIT_SSH_COMAND
 
   git log -n 1 --format="Repo checked out at %h %s"
   set -e
