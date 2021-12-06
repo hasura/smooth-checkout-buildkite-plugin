@@ -20,6 +20,8 @@ configuration:
                   type: string
                 ref:
                   type: string
+                ssh_key_path:
+                  type: string
               additionalProperties: false
             required:
               - url

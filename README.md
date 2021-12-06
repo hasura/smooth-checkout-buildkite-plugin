@@ -8,7 +8,7 @@ All the things you need during a Buildkite checkout :butter: :kite:
 steps:
   - command: echo "Skips checking out Git project in checkout" 
     plugins:
-      - hasura/smooth-checkout#v3.0.0:
+      - hasura/smooth-checkout#v3.1.0:
           skip_checkout: true
 ```
 
@@ -17,7 +17,7 @@ steps:
 steps:
   - command: echo "Checks out repo at given ref"
     plugins:
-      - hasura/smooth-checkout#v3.0.0:
+      - hasura/smooth-checkout#v3.1.0:
           repos:
             - config:
               - url: git@github.com:<username>/<reponame>.git
@@ -37,17 +37,45 @@ You can checkout multiple repositories by providing multiple `config` elements:
 steps:
   - command: echo "Checks out multiple git repositories"
     plugins:
-      - hasura/smooth-checkout#v3.0.0:
+      - hasura/smooth-checkout#v3.1.0:
           repos:
             - config:
               - url: git@github.com:<username>/<repo_1>.git
             - config:
-              - url: git@github.com:<username>/<repo_2>.git
+              - url: https://github.com/<username>/<repo_2>.git
                 ref: <ref>
 ```
-
 Unlike single repo checkouts, when checking out multiple repos, the working directory will be set to `$WOKRSPACE`, where all the repo checkouts have been done.
 In the above example, the contents of the working directory would be `repo_1/` and `repo_2/`.
+
+You can also explicitly provide the path to an ssh identity file using the `ssh_key_path` config field:
+```yaml
+steps:
+  - command: echo "Checks out multiple git repositories"
+    plugins:
+      - hasura/smooth-checkout#v3.1.0:
+          repos:
+            - config:
+              - url: git@github.com:<username>/<repo_1>.git
+                ssh_key_path: .ssh/key_1
+            - config:
+              - url: git@github.com:<username>/<repo_2>.git
+                ref: <ref>
+                ssh_key_path: .ssh/key_2
+```
+
+If you are using [smooth-secrets](https://github.com/hasura/smooth-secrets-buildkite-plugin) to configure ssh keys, you can do the following to easily set the `ssh_key_path`:
+```yaml
+steps:
+  - command: echo "Checks out multiple git repositories"
+    plugins:
+      - hasura/smooth-checkout#v3.1.0:
+          repos:
+            - config:
+              - url: git@github.com:<username>/<repo>.git
+                ssh_key_path: $$SECRETS_DIR/<key>
+```
+where `<key>` is the value of [`key` field](https://github.com/hasura/smooth-secrets-buildkite-plugin#key-required-string) in smooth-secrets config with any `/` characters replaced by `-`.
 
 ### Checking out repo from git mirrors
 You can attempt to fetch a git repository from git mirrors and fallback to using the original source repo in case of a failure while checking out from mirrors.
@@ -55,7 +83,7 @@ You can attempt to fetch a git repository from git mirrors and fallback to using
 steps:
   - command: echo "Checks out repo from mirror (fall back to github in case of failure)"
     plugins:
-      - hasura/smooth-checkout#v3.0.0:
+      - hasura/smooth-checkout#v3.1.0:
           repos:
             - config:
               - url: git@mirror.git.interal:/path/to/git/mirror
