@@ -96,7 +96,7 @@ checkout_repo() {
   while true; do
     url="$(get_indirected_env "${config_prefix}_${index}_URL")"
     ref="$(get_indirected_env "${config_prefix}_${index}_REF")"
-    ssh_key_path="$(get_indirected_env "${config_prefix}_${index}_SSH_KEY_PATH)"
+    ssh_key_path="$(get_indirected_env "${config_prefix}_${index}_SSH_KEY_PATH")"
     if [ -z "${url}" ]; then
         exit 1
     fi
