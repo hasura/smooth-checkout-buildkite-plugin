@@ -42,8 +42,23 @@ steps:
             - config:
               - url: git@github.com:<username>/<repo_1>.git
             - config:
+              - url: https://github.com/<username>/<repo_2>.git
+                ref: <ref>
+```
+You can also explicitly provide the path to an ssh identity file using the `ssh_key_path` config field:
+```yaml
+steps:
+  - command: echo "Checks out multiple git repositories"
+    plugins:
+      - hasura/smooth-checkout#v3.0.0:
+          repos:
+            - config:
+              - url: git@github.com:<username>/<repo_1>.git
+                ssh_key_path: .ssh/key_1
+            - config:
               - url: git@github.com:<username>/<repo_2>.git
                 ref: <ref>
+                ssh_key_path: .ssh/key_2
 ```
 
 Unlike single repo checkouts, when checking out multiple repos, the working directory will be set to `$WOKRSPACE`, where all the repo checkouts have been done.
