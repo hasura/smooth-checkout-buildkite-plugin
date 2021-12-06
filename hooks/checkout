@@ -44,6 +44,7 @@ setup_git_repo() {
   set +e
   local CLONE_URL="$1"
   local CHECKOUT_REF="$2"
+  local SSH_KEY_PATH="$3"
   local CLONE_DIR
   CLONE_DIR="$(get_repo_name "${CLONE_URL}")"
 
@@ -51,8 +52,13 @@ setup_git_repo() {
   echo " :::: git remote url = $CLONE_URL"
 
   cd "$WORKSPACE"
-  git clone --no-checkout "$CLONE_URL" && \
-  cd "$CLONE_DIR"
+  if [[ -z "$SSH_KEY_PATH" ]]; then
+    git clone --no-checkout "$CLONE_URL" && \
+      cd "$CLONE_DIR"
+  else
+    GIT_SSH_COMMAND="ssh -i $SSH_KEY_PATH -o IdentitiesOnly=yes" git clone --no-checkout "$CLONE_URL" && \
+      cd "$CLONE_DIR"
+  fi
   local EXIT_STATUS=$?
   if [[ $EXIT_STATUS -ne 0 ]]; then
     return $EXIT_STATUS
@@ -90,11 +96,12 @@ checkout_repo() {
   while true; do
     url="$(get_indirected_env "${config_prefix}_${index}_URL")"
     ref="$(get_indirected_env "${config_prefix}_${index}_REF")"
+    ssh_key_path="$(get_indirected_env "${config_prefix}_${index}_SSH_KEY_PATH)"
     if [ -z "${url}" ]; then
         exit 1
     fi
 
-    setup_git_repo "$url" "$ref"
+    setup_git_repo "$url" "$ref" "$ssh_key_path"
     EXIT_STATUS=$?
     if [[ $EXIT_STATUS -eq 0 ]]; then
       CHECKED_OUT_REPO_NAME="$(get_repo_name "$url")"
