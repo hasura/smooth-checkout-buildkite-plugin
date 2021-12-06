@@ -8,7 +8,7 @@ All the things you need during a Buildkite checkout :butter: :kite:
 steps:
   - command: echo "Skips checking out Git project in checkout" 
     plugins:
-      - hasura/smooth-checkout#v3.0.0:
+      - hasura/smooth-checkout#v3.1.0:
           skip_checkout: true
 ```
 
@@ -17,7 +17,7 @@ steps:
 steps:
   - command: echo "Checks out repo at given ref"
     plugins:
-      - hasura/smooth-checkout#v3.0.0:
+      - hasura/smooth-checkout#v3.1.0:
           repos:
             - config:
               - url: git@github.com:<username>/<reponame>.git
@@ -37,7 +37,7 @@ You can checkout multiple repositories by providing multiple `config` elements:
 steps:
   - command: echo "Checks out multiple git repositories"
     plugins:
-      - hasura/smooth-checkout#v3.0.0:
+      - hasura/smooth-checkout#v3.1.0:
           repos:
             - config:
               - url: git@github.com:<username>/<repo_1>.git
@@ -50,7 +50,7 @@ You can also explicitly provide the path to an ssh identity file using the `ssh_
 steps:
   - command: echo "Checks out multiple git repositories"
     plugins:
-      - hasura/smooth-checkout#v3.0.0:
+      - hasura/smooth-checkout#v3.1.0:
           repos:
             - config:
               - url: git@github.com:<username>/<repo_1>.git
@@ -70,7 +70,7 @@ You can attempt to fetch a git repository from git mirrors and fallback to using
 steps:
   - command: echo "Checks out repo from mirror (fall back to github in case of failure)"
     plugins:
-      - hasura/smooth-checkout#v3.0.0:
+      - hasura/smooth-checkout#v3.1.0:
           repos:
             - config:
               - url: git@mirror.git.interal:/path/to/git/mirror
