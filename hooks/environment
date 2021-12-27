@@ -11,3 +11,4 @@ function set_env() {
 
 echo "--- :house_with_garden: Setting up environment"
 set_env WORKSPACE "$HOME/buildkite-checkouts/$BUILDKITE_BUILD_ID/$BUILDKITE_JOB_ID"
+set_env BUILDKITE_BUILD_CHECKOUT_PATH "$WORKSPACE"
