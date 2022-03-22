@@ -42,13 +42,13 @@ get_repo_name() {
 
 setup_git_repo() {
   set +e
-  local CLONE_URL="$1"
+  local REPO_URL="$1"
   local CHECKOUT_REF="$2"
   local SSH_KEY_PATH="$3"
   local CLONE_DIR="$4"
 
   echo " :::: local clone location = '$CLONE_DIR'"
-  echo " :::: git remote url = '$CLONE_URL'"
+  echo " :::: git remote url = '$REPO_URL'"
   echo " :::: ssh key path = '$SSH_KEY_PATH'"
 
   if [[ -n "$SSH_KEY_PATH" ]]; then
@@ -57,8 +57,15 @@ setup_git_repo() {
   fi
 
   mkdir -p "${CLONE_DIR}" && cd "${CLONE_DIR}"
-  git clone --no-checkout "$CLONE_URL" .
-  local EXIT_STATUS=$?
+  if [[ -d ".git" ]]; then
+    echo "Git repository already exists. Just setting remote url"
+    git remote set-url origin "${REPO_URL}"
+    local EXIT_STATUS=$?
+  else
+    echo "Cloning ${REPO_URL}"
+    git clone ${BUILDKITE_GIT_CLONE_FLAGS} --no-checkout -- "$REPO_URL" .
+    local EXIT_STATUS=$?
+  fi
   if [[ $EXIT_STATUS -ne 0 ]]; then
     return $EXIT_STATUS
   fi
