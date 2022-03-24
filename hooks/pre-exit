@@ -3,7 +3,7 @@
 set -eo pipefail
 
 if [[ "$BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_SKIP_CHECKOUT" == "true" \
-    || "$BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_DELETE_CHECKOUT" == "false" ]]; then
+    || "$BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_DELETE_CHECKOUT" != "true" ]]; then
   exit 0
 fi
 
