@@ -82,7 +82,7 @@ setup_git_repo() {
   else
     echo "Checking out ref: $CHECKOUT_REF"
     git fetch --force origin "$CHECKOUT_REF" && \
-    git checkout --quiet --force "$CHECKOUT_REF"
+    git checkout --quiet --force FETCH_HEAD
     local EXIT_STATUS=$?
     if [[ $EXIT_STATUS -ne 0 ]]; then
       return $EXIT_STATUS
