@@ -100,7 +100,8 @@ steps:
 ## Setup & Cleanup
 Smooth Checkout also supports setting custom directories for your jobs and deleting the checkout
 directory after the job completes. `BUILDKITE_BUILD_CHECKOUT_PATH` is set to the
-directory specified by the `build_checkout_path` option.
+directory specified by the `build_checkout_path` option. For legacy reasons, the environment
+variable `WORKSPACE` is also set to the same value, but its usage is deprecated.
 ```yaml
 steps:
   - command: echo "Checks out repo to custom directory"
