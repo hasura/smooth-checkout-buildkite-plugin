@@ -63,7 +63,7 @@ setup_git_repo() {
     local EXIT_STATUS=$?
   else
     echo "Cloning ${REPO_URL}"
-    git clone ${BUILDKITE_GIT_CLONE_FLAGS} --no-checkout -- "$REPO_URL" .
+    git clone "${BUILDKITE_GIT_CLONE_FLAGS}" --no-checkout -- "$REPO_URL" .
     local EXIT_STATUS=$?
   fi
   if [[ $EXIT_STATUS -ne 0 ]]; then
@@ -94,7 +94,6 @@ setup_git_repo() {
   set -e
 }
 
-CHECKED_OUT_REPO_NAME=""
 checkout_repo() {
   local config_prefix="$1"
   local multiple_repos="$2"
@@ -110,19 +109,18 @@ checkout_repo() {
         exit 1
     fi
 
-    if [[ "${MULTIPLE_REPOS}" == "true" ]]; then
+    if [[ "${multiple_repos}" == "true" ]]; then
       clone_dir="$(get_repo_name "${url}")"
     else
       clone_dir="."
     fi
 
     setup_git_repo "$url" "$ref" "$ssh_key_path" "$clone_dir"
+
     EXIT_STATUS=$?
     if [[ $EXIT_STATUS -eq 0 ]]; then
-      CHECKED_OUT_REPO_NAME="$(get_repo_name "$url")"
       break
     fi
-
     index=$((index+=1))
   done
 }
