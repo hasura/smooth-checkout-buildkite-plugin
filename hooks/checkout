@@ -9,8 +9,8 @@ if [[ "$BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_SKIP_CHECKOUT" == "true" ]]; then
 fi
 
 echo "--- :open_file_folder: Setting up workspace"
-echo "Creating directory: $WORKSPACE"
-mkdir -p "$WORKSPACE" && cd "$WORKSPACE"
+echo "Creating directory: $BUILDKITE_BUILD_CHECKOUT_PATH"
+mkdir -p "$BUILDKITE_BUILD_CHECKOUT_PATH" && cd "$BUILDKITE_BUILD_CHECKOUT_PATH"
 echo "Setup completed successfully."
 
 echo "--- :key: Setting up git and ssh"
@@ -42,25 +42,30 @@ get_repo_name() {
 
 setup_git_repo() {
   set +e
-  local CLONE_URL="$1"
+  local REPO_URL="$1"
   local CHECKOUT_REF="$2"
   local SSH_KEY_PATH="$3"
-  local CLONE_DIR
-  CLONE_DIR="$(get_repo_name "${CLONE_URL}")"
+  local CLONE_DIR="$4"
 
-  echo " :::: local clone location = $CLONE_DIR"
-  echo " :::: git remote url = $CLONE_URL"
-  echo " :::: ssh key path = $SSH_KEY_PATH"
+  echo " :::: local clone location = '$CLONE_DIR'"
+  echo " :::: git remote url = '$REPO_URL'"
+  echo " :::: ssh key path = '$SSH_KEY_PATH'"
 
   if [[ -n "$SSH_KEY_PATH" ]]; then
     GIT_SSH_COMMAND="ssh -i $SSH_KEY_PATH -o IdentitiesOnly=yes"
     export GIT_SSH_COMMAND
   fi
 
-  cd "$WORKSPACE"
-  git clone --no-checkout "$CLONE_URL" && \
-    cd "$CLONE_DIR"
-  local EXIT_STATUS=$?
+  mkdir -p "${CLONE_DIR}" && cd "${CLONE_DIR}"
+  if [[ -d ".git" ]]; then
+    echo "Git repository already exists. Just setting remote url"
+    git remote set-url origin "${REPO_URL}"
+    local EXIT_STATUS=$?
+  else
+    echo "Cloning ${REPO_URL}"
+    git clone "${BUILDKITE_GIT_CLONE_FLAGS}" --no-checkout -- "$REPO_URL" .
+    local EXIT_STATUS=$?
+  fi
   if [[ $EXIT_STATUS -ne 0 ]]; then
     return $EXIT_STATUS
   fi
@@ -77,7 +82,7 @@ setup_git_repo() {
   else
     echo "Checking out ref: $CHECKOUT_REF"
     git fetch --force origin "$CHECKOUT_REF" && \
-    git checkout --quiet --force "$CHECKOUT_REF"
+    git checkout --quiet --force FETCH_HEAD
     local EXIT_STATUS=$?
     if [[ $EXIT_STATUS -ne 0 ]]; then
       return $EXIT_STATUS
@@ -89,13 +94,14 @@ setup_git_repo() {
   set -e
 }
 
-CHECKED_OUT_REPO_NAME=""
 checkout_repo() {
   local config_prefix="$1"
+  local multiple_repos="$2"
   local index=0
 
   echo "--- :git: Checking out repository"
   while true; do
+    echo "$index"
     url="$(get_indirected_env "${config_prefix}_${index}_URL")"
     ref="$(get_indirected_env "${config_prefix}_${index}_REF")"
     ssh_key_path="$(get_indirected_env "${config_prefix}_${index}_SSH_KEY_PATH")"
@@ -103,18 +109,28 @@ checkout_repo() {
         exit 1
     fi
 
-    setup_git_repo "$url" "$ref" "$ssh_key_path"
-    EXIT_STATUS=$?
-    if [[ $EXIT_STATUS -eq 0 ]]; then
-      CHECKED_OUT_REPO_NAME="$(get_repo_name "$url")"
-      break
+    if [[ "${multiple_repos}" == "true" ]]; then
+      clone_dir="$(get_repo_name "${url}")"
+    else
+      clone_dir="."
     fi
 
+    setup_git_repo "$url" "$ref" "$ssh_key_path" "$clone_dir"
+
+    EXIT_STATUS=$?
+    if [[ $EXIT_STATUS -eq 0 ]]; then
+      break
+    fi
     index=$((index+=1))
   done
 }
 
 PLUGIN_PREFIX="BUILDKITE_PLUGIN_SMOOTH_CHECKOUT"
+
+MULTIPLE_REPOS="true"
+if [[ -z "$(get_indirected_env "${PLUGIN_PREFIX}_REPOS_1_CONFIG_0_URL")" ]]; then
+  MULTIPLE_REPOS="false"
+fi
 
 index=0
 while true; do
@@ -122,12 +138,9 @@ while true; do
   if [[ -z "$(get_indirected_env "${config_prefix}_0_URL")" ]]; then
     break
   fi
-  checkout_repo "$config_prefix"
+  cd "${BUILDKITE_BUILD_CHECKOUT_PATH}"
+  checkout_repo "$config_prefix" "${MULTIPLE_REPOS}"
   index=$((index+1))
 done
 
-if [[ "$index" -eq 1 ]]; then
-  cd "${WORKSPACE}/${CHECKED_OUT_REPO_NAME}"
-else
-  cd "$WORKSPACE"
-fi
+cd "${BUILDKITE_BUILD_CHECKOUT_PATH}"

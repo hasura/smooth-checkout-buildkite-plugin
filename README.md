@@ -6,7 +6,7 @@ All the things you need during a Buildkite checkout :butter: :kite:
 ### Repository-less builds
 ```yml
 steps:
-  - command: echo "Skips checking out Git project in checkout" 
+  - command: echo "Skips checking out Git project in checkout"
     plugins:
       - hasura/smooth-checkout#v3.1.0:
           skip_checkout: true
@@ -45,8 +45,10 @@ steps:
               - url: https://github.com/<username>/<repo_2>.git
                 ref: <ref>
 ```
-Unlike single repo checkouts, when checking out multiple repos, the working directory will be set to `$WOKRSPACE`, where all the repo checkouts have been done.
-In the above example, the contents of the working directory would be `repo_1/` and `repo_2/`.
+Unlike single repo checkouts, when checking out multiple repos, they will each be checked out in
+subdirectories of `$BUILDKITE_BUILD_CHECKOUT_PATH` corresponding to the name of the repository
+(based on its URL). In the above example, the contents of the working directory would be `repo_1/`
+and `repo_2/`.
 
 You can also explicitly provide the path to an ssh identity file using the `ssh_key_path` config field:
 ```yaml
@@ -64,7 +66,8 @@ steps:
                 ssh_key_path: .ssh/key_2
 ```
 
-If you are using [smooth-secrets](https://github.com/hasura/smooth-secrets-buildkite-plugin) to configure ssh keys, you can do the following to easily set the `ssh_key_path`:
+If you are using [smooth-secrets](https://github.com/hasura/smooth-secrets-buildkite-plugin) to
+configure ssh keys, you can do the following to easily set the `ssh_key_path`:
 ```yaml
 steps:
   - command: echo "Checks out multiple git repositories"
@@ -75,10 +78,13 @@ steps:
               - url: git@github.com:<username>/<repo>.git
                 ssh_key_path: $$SECRETS_DIR/<key>
 ```
-where `<key>` is the value of [`key` field](https://github.com/hasura/smooth-secrets-buildkite-plugin#key-required-string) in smooth-secrets config with any `/` characters replaced by `-`.
+where `<key>` is the value of
+[`key` field](https://github.com/hasura/smooth-secrets-buildkite-plugin#key-required-string) in
+smooth-secrets config with any `/` characters replaced by `-`.
 
 ### Checking out repo from git mirrors
-You can attempt to fetch a git repository from git mirrors and fallback to using the original source repo in case of a failure while checking out from mirrors.
+You can attempt to fetch a git repository from git mirrors and fallback to using the original
+source repo in case of a failure while checking out from mirrors.
 ```yaml
 steps:
   - command: echo "Checks out repo from mirror (fall back to github in case of failure)"
@@ -92,9 +98,21 @@ steps:
 
 
 ## Setup & Cleanup
-Smooth Checkout sets up a workspace directory for your jobs in a non-conflicting fashion. Smooth Checkout achieves this by setting up a workspace directory at `$HOME/buildkite-checkouts/$BUILDKITE_BUILD_ID/$BUILDKITE_JOB_ID`. The workspace path is made available as `WORKSPACE` environment variable in command section.
-
-Smooth Checkout also takes care of cleaning up the workspace directory at the end of the Buildkite job.
+Smooth Checkout also supports setting custom directories for your jobs and deleting the checkout
+directory after the job completes. `BUILDKITE_BUILD_CHECKOUT_PATH` is set to the
+directory specified by the `build_checkout_path` option. For legacy reasons, the environment
+variable `WORKSPACE` is also set to the same value, but its usage is deprecated.
+```yaml
+steps:
+  - command: echo "Checks out repo to custom directory"
+    plugins:
+      - hasura/smooth-checkout#v3.1.0:
+          build_checkout_path: /tmp/${BUILDKITE_COMMIT}
+          delete_checkout: true
+          repos:
+            - config:
+              - url: git@github.com:<username>/<reponame>.git
+```
 
 ## Contributing
   - Fork this repo and clone on your machine:

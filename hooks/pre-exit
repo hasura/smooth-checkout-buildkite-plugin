@@ -2,17 +2,13 @@
 
 set -eo pipefail
 
-if [[ "$BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_SKIP_CHECKOUT" == "true" ]]; then
-    exit 0
+if [[ "$BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_SKIP_CHECKOUT" == "true" \
+    || "$BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_DELETE_CHECKOUT" != "true" ]]; then
+  exit 0
 fi
 
-echo "--- :broom: Cleaning up workspace"
-echo "Removing directory: $WORKSPACE/$CLONE_DIR"
-sudo rm -rf "$WORKSPACE/$CLONE_DIR"
-unset CLONE_DIR
-unset CLONE_URL
-
-echo "Removing workspace directory: $WORKSPACE"
-sudo rm -rf "$WORKSPACE"
-unset WORKSPACE
+echo "Removing checkout directory: $BUILDKITE_BUILD_CHECKOUT_PATH"
+# Only try sudo if deleting without sudo fails
+rm -rf "$BUILDKITE_BUILD_CHECKOUT_PATH" \
+  || sudo rm -rf "$BUILDKITE_BUILD_CHECKOUT_PATH"
 echo "Cleanup completed successfully."

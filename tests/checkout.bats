@@ -17,9 +17,7 @@ Because 'skip_checkout' configuration was set as true in pipeline YAML"
 }
 
 @test "creates checkout dir if skip flag not set" {
-  export BUILDKITE_BUILD_ID="test-build-id"
-  export BUILDKITE_JOB_ID="test-job-id"
-  export WORKSPACE="$HOME/buildkite-checkouts/$BUILDKITE_BUILD_ID/$BUILDKITE_JOB_ID"
+  export BUILDKITE_BUILD_CHECKOUT_PATH="$HOME/repo"
 
   stub git
   stub ssh-keyscan
@@ -27,5 +25,27 @@ Because 'skip_checkout' configuration was set as true in pipeline YAML"
   run "$PWD/hooks/checkout"
 
   assert_success
-  assert [ -d "$WORKSPACE" ]
+  assert [ -d "$BUILDKITE_BUILD_CHECKOUT_PATH" ]
+  rm -rf $BUILDKITE_BUILD_CHECKOUT_PATH
+  unset BUILDKITE_BUILD_CHECKOUT_PATH
+}
+
+@test "creates separate dirs for multiple repos" {
+  export BUILDKITE_BUILD_CHECKOUT_PATH="$HOME"
+  export BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_REPOS_0_CONFIG_0_URL="https://github.com/foo/bar.git"
+  export BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_REPOS_1_CONFIG_0_URL="https://github.com/foo/baz.git"
+
+  stub git
+  stub ssh-keyscan
+  stub ssh-keygen
+  run "$PWD/hooks/checkout"
+
+  assert_success
+  assert [ -d "$BUILDKITE_BUILD_CHECKOUT_PATH" ]
+  assert [ -d "$BUILDKITE_BUILD_CHECKOUT_PATH/bar" ]
+  assert [ -d "$BUILDKITE_BUILD_CHECKOUT_PATH/baz" ]
+  rm -rf $BUILDKITE_BUILD_CHECKOUT_PATH
+  unset BUILDKITE_BUILD_CHECKOUT_PATH
+  unset BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_REPOS_0_CONFIG_0_URL
+  unset BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_REPOS_1_CONFIG_0_URL
 }

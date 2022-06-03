@@ -6,6 +6,10 @@ configuration:
   properties:
     skip_checkout:
       type: boolean
+    build_checkout_path:
+      type: string
+    delete_checkout:
+      type: boolean
     repos:
       type: array
       items:
