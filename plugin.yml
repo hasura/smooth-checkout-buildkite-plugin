@@ -26,6 +26,8 @@ configuration:
                   type: string
                 ssh_key_path:
                   type: string
+                depth:
+                  type: number
               additionalProperties: false
             required:
               - url
