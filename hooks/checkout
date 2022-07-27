@@ -51,7 +51,7 @@ setup_git_repo() {
   echo " :::: local clone location = '$CLONE_DIR'"
   echo " :::: git remote url = '$REPO_URL'"
   echo " :::: ssh key path = '$SSH_KEY_PATH'"
-  if [[ -z "${DEPTH_FLAG}" ]]; then
+  if [[ -n "${DEPTH_FLAG}" ]]; then
     echo " :::: depth flag = '${DEPTH_FLAG}'"
   fi
 
