@@ -76,7 +76,7 @@ setup_git_repo() {
 
   if [ -z "${CHECKOUT_REF}" ]; then
     echo "Checking out branch: $BUILDKITE_BRANCH with $BUILDKITE_COMMIT"
-    git fetch --force origin ${DEPTH_FLAG} "$BUILDKITE_BRANCH" && \
+    git fetch --force ${DEPTH_FLAG} origin "$BUILDKITE_BRANCH" && \
     git checkout --quiet --force "$BUILDKITE_BRANCH" && \
     git reset --hard "$BUILDKITE_COMMIT"
     local EXIT_STATUS=$?
