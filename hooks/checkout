@@ -60,7 +60,7 @@ setup_git_repo() {
   if [[ -d ".git" ]]; then
     echo "Git repository already exists."
     echo "So, doing a git clean and setting the remote URL"
-    git clean -fdqx && \
+    sudo git clean -fdqx && \
     git remote set-url origin "${REPO_URL}"
     local EXIT_STATUS=$?
   else
