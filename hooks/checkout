@@ -58,7 +58,9 @@ setup_git_repo() {
 
   mkdir -p "${CLONE_DIR}" && cd "${CLONE_DIR}"
   if [[ -d ".git" ]]; then
-    echo "Git repository already exists. Just setting remote url"
+    echo "Git repository already exists."
+    echo "So, doing a git clean and setting the remote URL"
+    git clean -fdqx && \
     git remote set-url origin "${REPO_URL}"
     local EXIT_STATUS=$?
   else
