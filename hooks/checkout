@@ -48,6 +48,7 @@ setup_git_repo() {
   local CLONE_DIR="$4"
 
   echo " :::: local clone location = '$CLONE_DIR'"
+  echo " :::: checkout ref = '$CHECKOUT_REF'"
   echo " :::: git remote url = '$REPO_URL'"
   echo " :::: ssh key path = '$SSH_KEY_PATH'"
 
@@ -84,7 +85,7 @@ setup_git_repo() {
   else
     echo "Checking out ref: $CHECKOUT_REF"
     git fetch --force origin "$CHECKOUT_REF" && \
-    git checkout --quiet --force FETCH_HEAD
+    git checkout --quiet --force "$CHECKOUT_REF"
     local EXIT_STATUS=$?
     if [[ $EXIT_STATUS -ne 0 ]]; then
       return $EXIT_STATUS
