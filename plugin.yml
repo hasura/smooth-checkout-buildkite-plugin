@@ -26,6 +26,8 @@ configuration:
                   type: string
                 ssh_key_path:
                   type: string
+                clone_flags:
+                  type: string
               additionalProperties: false
             required:
               - url
