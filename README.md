@@ -21,7 +21,8 @@ steps:
           repos:
             - config:
               - url: git@github.com:<username>/<reponame>.git
-                ref: <ref>
+                ref: <ref> # (optional)
+                clone_flags: <flags> # (optional) flags to use with `git clone` command
 ```
 
 If `ref` is not provided the values of `BUILDKITE_BRANCH` and `BUILDKITE_COMMIT` env vars are used.
