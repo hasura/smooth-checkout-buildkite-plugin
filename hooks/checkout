@@ -10,9 +10,7 @@ fi
 
 echo "--- :open_file_folder: Setting up workspace"
 echo "Creating directory: $BUILDKITE_BUILD_CHECKOUT_PATH"
-
-
-sudo mkdir -p "$BUILDKITE_BUILD_CHECKOUT_PATH" && cd "$BUILDKITE_BUILD_CHECKOUT_PATH"
+mkdir -p "$BUILDKITE_BUILD_CHECKOUT_PATH" && cd "$BUILDKITE_BUILD_CHECKOUT_PATH"
 echo "Setup completed successfully."
 
 echo "--- :key: Setting up git and ssh"
@@ -62,12 +60,6 @@ setup_git_repo() {
   fi
 
   mkdir -p "${CLONE_DIR}" && cd "${CLONE_DIR}"
-
-  # if [[ $BUILDKITE_BUILD_ID ]]; then
-  #   sudo mkdir -p "/${BUILDKITE_BUILD_ID}" && cd "/${BUILDKITE_BUILD_ID}"
-  # fi
-
-
   if [[ -d ".git" ]]; then
     echo "Git repository already exists."
     echo "So, doing a git clean and setting the remote URL"
