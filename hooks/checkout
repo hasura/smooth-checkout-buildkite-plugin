@@ -9,7 +9,6 @@ if [[ "$BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_SKIP_CHECKOUT" == "true" ]]; then
 fi
 
 echo "--- :open_file_folder: Setting up workspace"
-export BUILDKITE_BUILD_CHECKOUT_PATH="$BUILDKITE_BUILD_CHECKOUT_PATH/$BUILDKITE_BUILD_ID"
 echo "Creating directory: $BUILDKITE_BUILD_CHECKOUT_PATH"
 
 

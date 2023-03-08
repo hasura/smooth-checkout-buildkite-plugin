@@ -11,7 +11,7 @@ function set_env() {
 
 echo "--- :house_with_garden: Setting up environment"
 if [[ -v BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_BUILD_CHECKOUT_PATH ]]; then
-  set_env BUILDKITE_BUILD_CHECKOUT_PATH "${BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_BUILD_CHECKOUT_PATH}"
+  set_env BUILDKITE_BUILD_CHECKOUT_PATH "${BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_BUILD_CHECKOUT_PATH}/${BUILDKITE_BUILD_ID}"
   # WORKSPACE is deprecated and preserved for backward compatibility.
   set_env WORKSPACE "${BUILDKITE_BUILD_CHECKOUT_PATH}"
 fi
