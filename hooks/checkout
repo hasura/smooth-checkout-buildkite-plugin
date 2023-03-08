@@ -60,6 +60,12 @@ setup_git_repo() {
   fi
 
   mkdir -p "${CLONE_DIR}" && cd "${CLONE_DIR}"
+
+  if [[ $BUILDKITE_BUILD_ID ]]; then
+    mkdir -p "/${BUILDKITE_BUILD_ID}" && cd "/${BUILDKITE_BUILD_ID}"
+  fi
+
+
   if [[ -d ".git" ]]; then
     echo "Git repository already exists."
     echo "So, doing a git clean and setting the remote URL"
