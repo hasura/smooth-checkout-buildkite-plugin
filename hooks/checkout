@@ -61,9 +61,9 @@ setup_git_repo() {
 
   mkdir -p "${CLONE_DIR}" && cd "${CLONE_DIR}"
 
-  if [[ $BUILDKITE_BUILD_ID ]]; then
-    mkdir -p "/${BUILDKITE_BUILD_ID}" && cd "/${BUILDKITE_BUILD_ID}"
-  fi
+  # if [[ $BUILDKITE_BUILD_ID ]]; then
+  #   mkdir -p "/${BUILDKITE_BUILD_ID}" && cd "/${BUILDKITE_BUILD_ID}"
+  # fi
 
 
   if [[ -d ".git" ]]; then

@@ -19,7 +19,6 @@ Because 'skip_checkout' configuration was set as true in pipeline YAML"
 @test "creates checkout dir if skip flag not set" {
   export BUILDKITE_BUILD_CHECKOUT_PATH="$HOME/repo"
 
-  mkdir -p "$HOME"
   stub git
   stub ssh-keyscan
   stub ssh-keygen
@@ -36,7 +35,6 @@ Because 'skip_checkout' configuration was set as true in pipeline YAML"
   export BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_REPOS_0_CONFIG_0_URL="https://github.com/foo/bar.git"
   export BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_REPOS_1_CONFIG_0_URL="https://github.com/foo/baz.git"
 
-  mkdir -p "$HOME"
   stub git
   stub ssh-keyscan
   stub ssh-keygen
