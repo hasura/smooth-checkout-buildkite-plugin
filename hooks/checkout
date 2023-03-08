@@ -9,7 +9,10 @@ if [[ "$BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_SKIP_CHECKOUT" == "true" ]]; then
 fi
 
 echo "--- :open_file_folder: Setting up workspace"
+export BUILDKITE_BUILD_CHECKOUT_PATH="$BUILDKITE_BUILD_CHECKOUT_PATH/$BUILDKITE_BUILD_ID"
 echo "Creating directory: $BUILDKITE_BUILD_CHECKOUT_PATH"
+
+
 mkdir -p "$BUILDKITE_BUILD_CHECKOUT_PATH" && cd "$BUILDKITE_BUILD_CHECKOUT_PATH"
 echo "Setup completed successfully."
 
@@ -61,9 +64,9 @@ setup_git_repo() {
 
   mkdir -p "${CLONE_DIR}" && cd "${CLONE_DIR}"
 
-  if [[ $BUILDKITE_BUILD_ID ]]; then
-    sudo mkdir -p "/${BUILDKITE_BUILD_ID}" && cd "/${BUILDKITE_BUILD_ID}"
-  fi
+  # if [[ $BUILDKITE_BUILD_ID ]]; then
+  #   sudo mkdir -p "/${BUILDKITE_BUILD_ID}" && cd "/${BUILDKITE_BUILD_ID}"
+  # fi
 
 
   if [[ -d ".git" ]]; then
@@ -75,7 +78,7 @@ setup_git_repo() {
   else
     echo "Cloning ${REPO_URL}"
     # shellcheck disable=SC2086
-    sudo git clone ${BUILDKITE_GIT_CLONE_FLAGS} ${CLONE_FLAGS} --no-checkout -- "$REPO_URL" .
+    git clone ${BUILDKITE_GIT_CLONE_FLAGS} ${CLONE_FLAGS} --no-checkout -- "$REPO_URL" "/${BUILDKITE_BUILD_ID}"
     local EXIT_STATUS=$?
   fi
   if [[ $EXIT_STATUS -ne 0 ]]; then
