@@ -5,7 +5,7 @@ set -euo pipefail
 function set_env() {
   local env_name=$1
   local env_value=$2
-  export "${env_name}"="$env_value"
+  export "${env_name}"="${env_value}"
   echo "${env_name}"="${!env_name}"
 }
 function set_env_2() {
@@ -21,17 +21,7 @@ if [[ -v BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_BUILD_CHECKOUT_PATH ]]; then
   temp_var=$(eval echo "$BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_BUILD_CHECKOUT_PATH")
   echo "$temp_var"
   set_env BUILDKITE_BUILD_CHECKOUT_PATH temp_var
-  # set_env BUILDKITE_BUILD_CHECKOUT_PATH "$BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_BUILD_CHECKOUT_PATH"
 
-  # export BUILDKITE_BUILD_CHECKOUT_PATH="$BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_BUILD_CHECKOUT_PATH"
-  # echo "$BUILDKITE_BUILD_CHECKOUT_PATH"
-
-  # set_env_2 BUILDKITE_BUILD_CHECKOUT_PATH "${BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_BUILD_CHECKOUT_PATH}"
-  # echo "$BUILDKITE_BUILD_CHECKOUT_PATH"
-
-  # echo "$BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_BUILD_CHECKOUT_PATH"
-  # export some_var="$BUILDKITE_BUILD_CHECKOUT_PATH/$BUILDKITE_BUILD_ID/$BUILDKITE_JOB_ID"
-  # echo "$some_var"
   # WORKSPACE is deprecated and preserved for backward compatibility.
   set_env WORKSPACE "${BUILDKITE_BUILD_CHECKOUT_PATH}"
 fi
