@@ -11,6 +11,8 @@ fi
 echo "--- :open_file_folder: Setting up workspace"
 echo "Creating directory: $BUILDKITE_BUILD_CHECKOUT_PATH"
 mkdir -p "$BUILDKITE_BUILD_CHECKOUT_PATH" && cd "$BUILDKITE_BUILD_CHECKOUT_PATH"
+echo "logging the current dir"
+pwd
 echo "Setup completed successfully."
 
 echo "--- :key: Setting up git and ssh"
