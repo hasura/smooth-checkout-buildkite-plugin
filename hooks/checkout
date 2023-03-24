@@ -20,7 +20,7 @@ if ! ssh-keygen -F github.com > /dev/null; then
   TMP_FILE="$(mktemp /tmp/github_rsa.pub.XXXXXX)"
   ssh-keyscan -t rsa github.com > "$TMP_FILE"
   GH_PUBKEY_FINGERPRINT="$(ssh-keygen -lf "$TMP_FILE" | awk '{ print $2 }')"
-  if [ "$GH_PUBKEY_FINGERPRINT" != "SHA256:nThbg6kXUpJWGl7E1IGOCspRomTxdCARLviKw6E5SY8" ]; then
+  if [ "$GH_PUBKEY_FINGERPRINT" != "SHA256:uNiVztksCsDhcc0u9e8BujQXVUpKZIDTMczCvj3tD2s" ]; then
     echo "FATAL: got wrong public key from keyscan"
     exit 1
   fi
