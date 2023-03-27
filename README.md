@@ -128,7 +128,7 @@ steps:
             - config:
               - url: git@github.com:<username>/<reponame>.git
 ```
-
+### Use custom directory with interpolation
 Additionally, if `BUILDKITE_PIPELINE_NO_INTERPOLATION` is set to true and we want to interpolate custom directory, `BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_INTERPOLATE_CHECKOUT_PATH` is to be exported from the working directory.
 
 ## Contributing
