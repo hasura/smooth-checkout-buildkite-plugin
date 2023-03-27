@@ -136,11 +136,11 @@ steps:
   - command: echo "Checks out repo to custom directory"
     plugins:
       - hasura/smooth-checkout#v4.1.1:
-          interpolate_checkout_path: /tmp/${BUILD_CHECKOUT_PATH}/${BUILD_ID}
           delete_checkout: true
           repos:
             - config:
               - url: git@github.com:<username>/<reponame>.git
+                interpolate_checkout_path: /tmp/${BUILD_CHECKOUT_PATH}/${BUILD_ID}
 ```
 
 ## Contributing
