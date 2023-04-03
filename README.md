@@ -129,7 +129,7 @@ steps:
               - url: git@github.com:<username>/<reponame>.git
 ```
 ### Use custom directory with interpolation
-Additionally, if `BUILDKITE_PIPELINE_NO_INTERPOLATION` is set to true and custom directory is an interpolation of variables (example: depends on BUILDKITE_JOB_ID, BUILDKITE_STEP_ID etc); export `BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_INTERPOLATE_CHECKOUT_PATH` from the working directory or using `interpolate_checkout_path` option.
+Additionally, if `BUILDKITE_PIPELINE_NO_INTERPOLATION` is set to true and custom directory is an interpolation of variables (example: depends on BUILDKITE_JOB_ID, BUILDKITE_STEP_ID etc); use `interpolate_checkout_path` env to set the directory.
 
 ```yaml
 steps:
