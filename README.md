@@ -135,7 +135,7 @@ Additionally, if `BUILDKITE_PIPELINE_NO_INTERPOLATION` is set to true and custom
 steps:
   - command: echo "Checks out repo to custom directory"
     plugins:
-      - hasura/smooth-checkout#v4.1.1:
+      - hasura/smooth-checkout#v4.2.1:
           interpolate_checkout_path: /tmp/${BUILD_CHECKOUT_PATH}/${BUILD_ID}
           delete_checkout: true
           repos:
