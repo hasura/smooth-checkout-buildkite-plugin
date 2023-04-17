@@ -10,6 +10,8 @@ configuration:
       type: string
     delete_checkout:
       type: boolean
+    interpolate_checkout_path:
+      type: string
     repos:
       type: array
       items:
