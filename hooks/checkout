@@ -63,8 +63,9 @@ setup_git_repo() {
   if [[ -d ".git" ]]; then
     echo "Git repository already exists."
     echo "So, doing a git clean and setting the remote URL"
-    sudo git clean -fdqx && \
-    git remote set-url origin "${REPO_URL}"
+    git clean -fdqx || \
+      sudo git clean -fdqx && \
+      git remote set-url origin "${REPO_URL}"
     local EXIT_STATUS=$?
   else
     echo "Cloning ${REPO_URL}"
@@ -76,25 +77,25 @@ setup_git_repo() {
     return $EXIT_STATUS
   fi
 
-  if [ -z "${CHECKOUT_REF}" ]; then
+  if [ -n "${BUILDKITE_TAG}" ]; then
+    echo "Checking out tag: ${BUILDKITE_TAG}"
+    git fetch --force origin "${BUILDKITE_TAG}" && \
+      git checkout --quiet --force "${BUILDKITE_TAG}"
+  elif [ -z "${CHECKOUT_REF}" ]; then
     echo "Checking out branch: $BUILDKITE_BRANCH with $BUILDKITE_COMMIT"
     git fetch --force origin "$BUILDKITE_BRANCH" && \
-    git checkout --quiet --force "$BUILDKITE_BRANCH" && \
-    git reset --hard "$BUILDKITE_COMMIT"
-    local EXIT_STATUS=$?
-    if [[ $EXIT_STATUS -ne 0 ]]; then
-      return $EXIT_STATUS
-    fi
+      git checkout --quiet --force "$BUILDKITE_BRANCH" && \
+      git reset --hard "$BUILDKITE_COMMIT"
   else
     echo "Checking out ref: $CHECKOUT_REF"
     git fetch --force origin "$CHECKOUT_REF" && \
-    git checkout --quiet --force "$CHECKOUT_REF"
-    local EXIT_STATUS=$?
-    if [[ $EXIT_STATUS -ne 0 ]]; then
-      return $EXIT_STATUS
-    fi
+      git checkout --quiet --force "$CHECKOUT_REF"
   fi
+  local EXIT_STATUS=$?
   unset GIT_SSH_COMAND
+  if [[ $EXIT_STATUS -ne 0 ]]; then
+    return $EXIT_STATUS
+  fi
 
   git log -n 1 --format="Repo checked out at %h %s"
   set -e
