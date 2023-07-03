@@ -63,8 +63,9 @@ setup_git_repo() {
   if [[ -d ".git" ]]; then
     echo "Git repository already exists."
     echo "So, doing a git clean and setting the remote URL"
-    sudo git clean -fdqx && \
-    git remote set-url origin "${REPO_URL}"
+    sudo git clean -fdqx || \
+      git clean -fdqx && \
+      git remote set-url origin "${REPO_URL}"
     local EXIT_STATUS=$?
   else
     echo "Cloning ${REPO_URL}"
@@ -88,7 +89,7 @@ setup_git_repo() {
   else
     echo "Checking out ref: $CHECKOUT_REF"
     git fetch --force origin "$CHECKOUT_REF" && \
-    git checkout --quiet --force "$CHECKOUT_REF"
+      git checkout --quiet --force "$CHECKOUT_REF"
   fi
   local EXIT_STATUS=$?
   unset GIT_SSH_COMAND
