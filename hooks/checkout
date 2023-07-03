@@ -77,15 +77,17 @@ setup_git_repo() {
     return $EXIT_STATUS
   fi
 
-  if [ -n "${BUILDKITE_TAG}" ]; then
-    echo "Checking out tag: ${BUILDKITE_TAG}"
-    git fetch --force origin "${BUILDKITE_TAG}" && \
-      git checkout --quiet --force "${BUILDKITE_TAG}"
-  elif [ -z "${CHECKOUT_REF}" ]; then
-    echo "Checking out branch: $BUILDKITE_BRANCH with $BUILDKITE_COMMIT"
-    git fetch --force origin "$BUILDKITE_BRANCH" && \
-      git checkout --quiet --force "$BUILDKITE_BRANCH" && \
-      git reset --hard "$BUILDKITE_COMMIT"
+  if [ -z "${CHECKOUT_REF}" ]; then
+    if [ -n "${BUILDKITE_TAG}" ]; then
+      echo "Checking out tag: ${BUILDKITE_TAG}"
+      git fetch --force origin "${BUILDKITE_TAG}" && \
+        git checkout --quiet --force "${BUILDKITE_TAG}"
+    else
+      echo "Checking out branch: $BUILDKITE_BRANCH with $BUILDKITE_COMMIT"
+      git fetch --force origin "$BUILDKITE_BRANCH" && \
+        git checkout --quiet --force "$BUILDKITE_BRANCH" && \
+        git reset --hard "$BUILDKITE_COMMIT"
+    fi
   else
     echo "Checking out ref: $CHECKOUT_REF"
     git fetch --force origin "$CHECKOUT_REF" && \
