@@ -9,7 +9,11 @@ fi
 
 echo "Removing checkout directory: $BUILDKITE_BUILD_CHECKOUT_PATH"
 
+echo "before rm -rf of $BUILDKITE_BUILD_CHECKOUT_PATH"
+
 rm -rf "$BUILDKITE_BUILD_CHECKOUT_PATH" || true
+
+echo "after rm -rf of $BUILDKITE_BUILD_CHECKOUT_PATH"
 
 if [ -d "$BUILDKITE_BUILD_CHECKOUT_PATH" ]; then
   echo "Tried running: rm -rf $BUILDKITE_BUILD_CHECKOUT_PATH"
@@ -17,13 +21,19 @@ if [ -d "$BUILDKITE_BUILD_CHECKOUT_PATH" ]; then
   ls -la $BUILDKITE_BUILD_CHECKOUT_PATH
 fi
 
+echo "after first check"
+
 if [ -d "$BUILDKITE_BUILD_CHECKOUT_PATH" ]; then
   echo "Trying to cleanup $BUILDKITE_BUILD_CHECKOUT_PATH using sudo"
   sudo -n rm -rf "$BUILDKITE_BUILD_CHECKOUT_PATH"
 fi
+
+echo "after second check"
 
 if [ -d "$BUILDKITE_BUILD_CHECKOUT_PATH" ]; then
   echo "Cleanup was not successful."
 else
   echo "Cleanup completed successfully."
 fi
+
+echo "finally"
