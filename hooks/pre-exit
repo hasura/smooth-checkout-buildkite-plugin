@@ -9,11 +9,13 @@ fi
 
 echo "Removing checkout directory: $BUILDKITE_BUILD_CHECKOUT_PATH"
 
-rm -rf "$BUILDKITE_BUILD_CHECKOUT_PATH" 2>/dev/null || {
+rm -rf "$BUILDKITE_BUILD_CHECKOUT_PATH" || true
+
+if [ -d "$BUILDKITE_BUILD_CHECKOUT_PATH" ]; then
   echo "Tried running: rm -rf $BUILDKITE_BUILD_CHECKOUT_PATH"
   echo "But it failed leaving the following files as residue"
   ls -la $BUILDKITE_BUILD_CHECKOUT_PATH
-}
+fi
 
 if [ -d "$BUILDKITE_BUILD_CHECKOUT_PATH" ]; then
   echo "Trying to cleanup $BUILDKITE_BUILD_CHECKOUT_PATH using sudo"
