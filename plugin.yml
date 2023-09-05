@@ -29,7 +29,11 @@ configuration:
                 ssh_key_path:
                   type: string
                 clone_flags:
-                  type: string
+                  anyOf:
+                    - type: string
+                    - type: array
+                      items:
+                        type: string
               additionalProperties: false
             required:
               - url

@@ -8,7 +8,7 @@ All the things you need during a Buildkite checkout :butter: :kite:
 steps:
   - command: echo "Skips checking out Git project in checkout"
     plugins:
-      - hasura/smooth-checkout#v4.1.1:
+      - hasura/smooth-checkout#v4.4.0:
           skip_checkout: true
 ```
 
@@ -17,7 +17,7 @@ steps:
 steps:
   - command: echo "Checks out repo at given ref"
     plugins:
-      - hasura/smooth-checkout#v4.1.1:
+      - hasura/smooth-checkout#v4.4.0:
           repos:
             - config:
               - url: git@github.com:<username>/<reponame>.git
@@ -32,13 +32,15 @@ Allowed values for `ref`:
 - Git tag
 - Commit SHA (40 character long hash)
 
+`clone_flags` can either be a string or an array of strings.
+
 ### Shallow clone
 A shallow clone can easily be done by passing the `depth` flag in the `clone_flags` field. For example:
 ```yaml
 steps:
   - command: echo "shallow clone repo"
     plugins:
-      - hasura/smooth-checkout#v4.1.1:
+      - hasura/smooth-checkout#v4.4.0:
           repos:
             - config:
                 - url: "git@github.com:hasura/smooth-checkout-buildkite-plugin"
@@ -52,7 +54,7 @@ You can checkout multiple repositories by providing multiple `config` elements:
 steps:
   - command: echo "Checks out multiple git repositories"
     plugins:
-      - hasura/smooth-checkout#v4.1.1:
+      - hasura/smooth-checkout#v4.4.0:
           repos:
             - config:
               - url: git@github.com:<username>/<repo_1>.git
@@ -70,7 +72,7 @@ You can also explicitly provide the path to an ssh identity file using the `ssh_
 steps:
   - command: echo "Checks out multiple git repositories"
     plugins:
-      - hasura/smooth-checkout#v4.1.1:
+      - hasura/smooth-checkout#v4.4.0:
           repos:
             - config:
               - url: git@github.com:<username>/<repo_1>.git
@@ -87,7 +89,7 @@ configure ssh keys, you can do the following to easily set the `ssh_key_path`:
 steps:
   - command: echo "Checks out multiple git repositories"
     plugins:
-      - hasura/smooth-checkout#v4.1.1:
+      - hasura/smooth-checkout#v4.4.0:
           repos:
             - config:
               - url: git@github.com:<username>/<repo>.git
@@ -104,7 +106,7 @@ source repo in case of a failure while checking out from mirrors.
 steps:
   - command: echo "Checks out repo from mirror (fall back to github in case of failure)"
     plugins:
-      - hasura/smooth-checkout#v4.1.1:
+      - hasura/smooth-checkout#v4.4.0:
           repos:
             - config:
               - url: git@mirror.git.interal:/path/to/git/mirror
@@ -121,7 +123,7 @@ variable `WORKSPACE` is also set to the same value, but its usage is deprecated.
 steps:
   - command: echo "Checks out repo to custom directory"
     plugins:
-      - hasura/smooth-checkout#v4.1.1:
+      - hasura/smooth-checkout#v4.4.0:
           build_checkout_path: /tmp/${BUILDKITE_COMMIT}
           delete_checkout: true
           repos:
