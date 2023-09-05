@@ -53,6 +53,7 @@ get_clone_flags() {
       return
     fi
     clone_flags+=("$temp_clone_flag")
+    index=$((index+1))
   done
 }
 
