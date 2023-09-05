@@ -92,7 +92,7 @@ setup_git_repo() {
   else
     echo "Cloning ${REPO_URL}"
     # shellcheck disable=SC2086
-    git clone ${BUILDKITE_GIT_CLONE_FLAGS} ${CLONE_FLAGS[@]} --no-checkout -- "$REPO_URL" .
+    git clone ${BUILDKITE_GIT_CLONE_FLAGS} "${CLONE_FLAGS[@]}" --no-checkout -- "$REPO_URL" .
     local EXIT_STATUS=$?
   fi
   if [[ $EXIT_STATUS -ne 0 ]]; then
