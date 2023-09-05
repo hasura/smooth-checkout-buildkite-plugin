@@ -42,6 +42,7 @@ get_repo_name() {
 
 setup_git_repo() {
   set +e
+  set -x
   local REPO_URL="$1"
   local CHECKOUT_REF="$2"
   local SSH_KEY_PATH="$3"
