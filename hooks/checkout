@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 set -eo pipefail
+set -x
 
 if [[ "$BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_SKIP_CHECKOUT" == "true" ]]; then
     echo "--- :fast_forward: Skipping checkout"
@@ -42,7 +43,6 @@ get_repo_name() {
 
 setup_git_repo() {
   set +e
-  set -x
   local REPO_URL="$1"
   local CHECKOUT_REF="$2"
   local SSH_KEY_PATH="$3"
