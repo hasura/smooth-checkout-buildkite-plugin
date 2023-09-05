@@ -134,15 +134,15 @@ checkout_repo() {
   while true; do
     echo "$index"
     url="$(get_indirected_env "${config_prefix}_${index}_URL")"
+    if [ -z "${url}" ]; then
+        exit 1
+    fi
+
     ref="$(get_indirected_env "${config_prefix}_${index}_REF")"
     ssh_key_path="$(get_indirected_env "${config_prefix}_${index}_SSH_KEY_PATH")"
 
     declare -a clone_flags
     get_clone_flags clone_flags "${config_prefix}_${index}_CLONE_FLAGS"
-
-    if [ -z "${url}" ]; then
-        exit 1
-    fi
 
     if [[ "${multiple_repos}" == "true" ]]; then
       clone_dir="$(get_repo_name "${url}")"
