@@ -37,12 +37,12 @@ get_indirected_env() {
 }
 
 get_clone_flags() {
-  local -n clone_flags=$1
+  local -n clone_flags_ref=$1
   local env_prefix="$2"
 
   temp_clone_flags="$(get_indirected_env "$env_prefix")"
   if [ -n "$temp_clone_flags" ]; then
-    clone_flags=("$temp_clone_flags")
+    clone_flags_ref=("$temp_clone_flags")
     return
   fi
 
@@ -52,7 +52,7 @@ get_clone_flags() {
     if [ -z "$temp_clone_flag" ]; then
       return
     fi
-    clone_flags+=("$temp_clone_flag")
+    clone_flags_ref+=("$temp_clone_flag")
     index=$((index+1))
   done
 }
