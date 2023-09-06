@@ -61,7 +61,7 @@ get_repo_name() {
   echo "${repo_url%/}" | awk -F '/' '{ print $NF }' | sed -e "s/\.git$//"
 }
 
-setup_git_repo() (
+setup_git_repo() {
   set +e
   local REPO_URL="$1"
   local CHECKOUT_REF="$2"
@@ -80,7 +80,8 @@ setup_git_repo() (
     export GIT_SSH_COMMAND
   fi
 
-  mkdir -p "${CLONE_DIR}" && cd "${CLONE_DIR}"
+  mkdir -p "${BUILDKITE_BUILD_CHECKOUT_PATH}/${CLONE_DIR}" && \
+    cd "${BUILDKITE_BUILD_CHECKOUT_PATH}/${CLONE_DIR}"
   if [[ -d ".git" ]]; then
     echo "Git repository already exists."
     echo "So, doing a git clean and setting the remote URL"
@@ -123,7 +124,7 @@ setup_git_repo() (
 
   git log -n 1 --format="Repo checked out at %h %s"
   set -e
-)
+}
 
 checkout_repo() {
   local config_prefix="$1"
