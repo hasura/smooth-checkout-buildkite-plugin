@@ -61,7 +61,7 @@ get_repo_name() {
   echo "${repo_url%/}" | awk -F '/' '{ print $NF }' | sed -e "s/\.git$//"
 }
 
-setup_git_repo() {
+setup_git_repo() (
   set +e
   local REPO_URL="$1"
   local CHECKOUT_REF="$2"
@@ -123,7 +123,7 @@ setup_git_repo() {
 
   git log -n 1 --format="Repo checked out at %h %s"
   set -e
-}
+)
 
 checkout_repo() {
   local config_prefix="$1"
@@ -151,7 +151,7 @@ checkout_repo() {
       clone_dir="."
     fi
 
-    (setup_git_repo "$url" "$ref" "$ssh_key_path" "$clone_dir" clone_flags)
+    setup_git_repo "$url" "$ref" "$ssh_key_path" "$clone_dir" clone_flags
 
     EXIT_STATUS=$?
     if [[ $EXIT_STATUS -eq 0 ]]; then
