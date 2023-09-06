@@ -142,7 +142,7 @@ checkout_repo() {
     ssh_key_path="$(get_indirected_env "${config_prefix}_${index}_SSH_KEY_PATH")"
 
     # shellcheck disable=SC2034
-    declare -a clone_flags
+    declare -a clone_flags=()
     get_clone_flags clone_flags "${config_prefix}_${index}_CLONE_FLAGS"
 
     if [[ "${multiple_repos}" == "true" ]]; then
