@@ -151,7 +151,7 @@ checkout_repo() {
       clone_dir="."
     fi
 
-    setup_git_repo "$url" "$ref" "$ssh_key_path" "$clone_dir" clone_flags
+    (setup_git_repo "$url" "$ref" "$ssh_key_path" "$clone_dir" clone_flags)
 
     EXIT_STATUS=$?
     if [[ $EXIT_STATUS -eq 0 ]]; then
