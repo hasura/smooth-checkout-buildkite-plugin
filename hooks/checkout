@@ -113,7 +113,8 @@ setup_git_repo() {
   else
     echo "Checking out ref: $CHECKOUT_REF"
     git fetch --force origin "$CHECKOUT_REF" && \
-      git checkout --quiet --force FETCH_HEAD
+      git checkout --quiet --force "$CHECKOUT_REF" && \
+      git reset --hard FETCH_HEAD
   fi
   local EXIT_STATUS=$?
   unset GIT_SSH_COMAND
