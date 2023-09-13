@@ -106,7 +106,7 @@ setup_git_repo() {
         git checkout --quiet --force "${BUILDKITE_TAG}"
     else
       echo "Checking out branch: $BUILDKITE_BRANCH with $BUILDKITE_COMMIT"
-      git fetch --force origin "${BUILDKITE_BRANCH}:${BUILDKITE_BRANCH}" && \
+      git fetch --force origin "${BUILDKITE_BRANCH}:${BUILDKITE_BRANCH}" --update-head-ok && \
         git checkout --quiet --force "$BUILDKITE_BRANCH" && \
         git reset --hard "$BUILDKITE_COMMIT"
     fi
