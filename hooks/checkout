@@ -102,7 +102,7 @@ setup_git_repo() {
   if [ -z "${CHECKOUT_REF}" ]; then
     if [ -n "${BUILDKITE_TAG}" ]; then
       echo "Checking out tag: ${BUILDKITE_TAG}"
-      git fetch --force origin "${BUILDKITE_TAG}:${BUILDKITE_TAG}" && \
+      git fetch --force origin "${BUILDKITE_TAG}:refs/tags/${BUILDKITE_TAG}" && \
         git checkout --quiet --force "${BUILDKITE_TAG}"
     else
       echo "Checking out branch: $BUILDKITE_BRANCH with $BUILDKITE_COMMIT"
