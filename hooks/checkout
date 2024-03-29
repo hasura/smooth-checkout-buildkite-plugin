@@ -122,6 +122,17 @@ setup_git_repo() {
     return $EXIT_STATUS
   fi
 
+  if command -v git-lfs; then
+    echo "running git lfs pull"
+    git lfs pull
+  else 
+    echo "git-lfs not installed, skipping git lfs pull"
+  fi
+  local EXIT_STATUS=$?
+  if [[ $EXIT_STATUS -ne 0 ]]; then
+    return $EXIT_STATUS
+  fi
+
   git log -n 1 --format="Repo checked out at %h %s"
   set -e
 }
