@@ -124,6 +124,7 @@ setup_git_repo() {
 
   if command -v git-lfs; then
     echo "running git lfs pull"
+    git lfs install
     git lfs pull
   else 
     echo "git-lfs not installed, skipping git lfs pull"
