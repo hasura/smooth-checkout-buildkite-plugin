@@ -145,6 +145,31 @@ steps:
               - url: git@github.com:<username>/<reponame>.git
 ```
 
+### Disposable CI checkouts
+
+Set `clean_checkout: true` with `delete_checkout: true` for disposable CI
+workspaces. The checkout must be a directory strictly below `BUILDKITE_BUILD_PATH`,
+not the build root itself or a symlink. This mode:
+
+- removes an old checkout **before cloning**, including residue without `.git`;
+- removes the checkout after the job, retrying after restoring owner permissions;
+- requests `buildkite-agent stop` and fails the hook if removal still fails, so
+  a dirty worker does not keep accepting jobs.
+
+It does not require passwordless sudo. If the stop request itself fails, the hook
+reports that operator intervention is required. Other plugin users keep the
+existing checkout and cleanup behaviour unless they opt in.
+
+```yaml
+- hasura/smooth-checkout#<commit-or-release>:
+    repos:
+      - config:
+          - url: git@github.com:hasura/promptql-cloud.git
+    interpolate_checkout_path: "$$BUILDKITE_BUILD_PATH/promptql-cloud-ci"
+    delete_checkout: true
+    clean_checkout: true
+```
+
 ## Contributing
   - Fork this repo and clone on your machine:
     ```bash
