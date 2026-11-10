@@ -7,6 +7,13 @@ if [[ "$BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_SKIP_CHECKOUT" == "true" \
   exit 0
 fi
 
+if [[ "${BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_CLEAN_CHECKOUT:-}" == "true" ]]; then
+  # shellcheck source=lib/cleanup.bash
+  source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/lib/cleanup.bash"
+  clean_disposable_checkout
+  exit $?
+fi
+
 echo "Removing checkout directory: $BUILDKITE_BUILD_CHECKOUT_PATH"
 # redirecting rm's stderr to /dev/null
 # because it would pollute the logs if there were a lot of files inside the folder to be removed.
