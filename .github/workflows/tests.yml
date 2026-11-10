@@ -16,5 +16,5 @@ jobs:
       - name: Disposable checkout regression tests
         run: bash tests/cleanup.sh
       - name: run tests
-        run: docker-compose run --rm tests
+        run: docker compose run --rm tests
     
