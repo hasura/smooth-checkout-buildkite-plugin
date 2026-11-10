@@ -141,7 +141,10 @@ if command -v python3 >/dev/null 2>&1; then
   python3 - "$ROOT/fake-agent-ready" <<'PYTEST' &
 import ctypes, signal, sys, time
 ctypes.CDLL(None).prctl(15, b"buildkite-agent", 0, 0, 0)
-signal.signal(signal.SIGTERM, lambda *_: sys.exit(0))
+def stopped(*_):
+    open(sys.argv[1] + ".stopped", "w").close()
+    sys.exit(0)
+signal.signal(signal.SIGTERM, stopped)
 open(sys.argv[1], "w").close()
 time.sleep(30)
 PYTEST
@@ -153,6 +156,16 @@ PYTEST
   export BUILDKITE_AGENT_PID="$fake_agent" FAIL_REMOVE=true STOP_RC=1
   expect_failure pre-exit
   grep -q 'signalling local agent' "$ROOT/output"
+  for _ in $(seq 1 100); do
+    [[ -f "$ROOT/fake-agent-ready.stopped" ]] && break
+    sleep 0.01
+  done
+  if [[ ! -f "$ROOT/fake-agent-ready.stopped" ]]; then
+    kill -TERM "$fake_agent"
+    wait "$fake_agent"
+    echo "local agent did not receive SIGTERM" >&2
+    exit 1
+  fi
   wait "$fake_agent"
   check "failed API request stops the verified local agent with SIGTERM"
 fi
