@@ -156,8 +156,10 @@ not the build root itself or a symlink. This mode:
 - requests `buildkite-agent stop` and fails the hook if removal still fails, so
   a dirty worker does not keep accepting jobs.
 
-It does not require passwordless sudo. If the stop request itself fails, the hook
-reports that operator intervention is required. Other plugin users keep the
+It does not require passwordless sudo. If the stop API is unavailable, it checks
+`BUILDKITE_AGENT_PID` identifies a local `buildkite-agent` process and sends it
+SIGTERM (the agent's graceful pool-stop signal). If neither stop mechanism works,
+the hook reports that operator intervention is required. Other plugin users keep the
 existing checkout and cleanup behaviour unless they opt in.
 
 

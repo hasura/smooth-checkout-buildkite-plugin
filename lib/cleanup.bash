@@ -17,11 +17,20 @@ validate_cleanup_path() {
   fi
   build_root="$(cd "$BUILDKITE_BUILD_PATH" && pwd -P)" || return 1
   [[ "$build_root" != "/" ]] || return 1
-  # Nothing exists to delete on a new worker.
-  if [[ ! -e "$BUILDKITE_BUILD_CHECKOUT_PATH" ]]; then
-    return 0
-  fi
-  checkout_path="$(cd "$BUILDKITE_BUILD_CHECKOUT_PATH" && pwd -P)" || return 1
+  # Canonicalise the nearest existing ancestor, including on a fresh worker.
+  # This catches an outside-root target before it is created by checkout.
+  checkout_path="$BUILDKITE_BUILD_CHECKOUT_PATH"
+  local suffix="" parent
+  while [[ ! -e "$checkout_path" ]]; do
+    parent="$(dirname "$checkout_path")"
+    [[ "$parent" != "$checkout_path" ]] || return 1
+    suffix="/$(basename "$checkout_path")$suffix"
+    checkout_path="$parent"
+  done
+  checkout_path="$(cd "$checkout_path" && pwd -P)$suffix" || return 1
+  case "/$suffix/" in
+    */../*|*/./*) echo "Refusing a checkout path with dot components" >&2; return 1 ;;
+  esac
   case "$checkout_path" in
     "$build_root"/*) ;;
     *) echo "Refusing to clean outside the agent build root: $checkout_path" >&2; return 1 ;;
@@ -58,6 +67,27 @@ remove_disposable_checkout() {
   return 1
 }
 
+stop_dirty_agent() {
+  # The API request targets only this agent, even if the pool has several.
+  if buildkite-agent stop; then
+    return 0
+  fi
+  # If the API is unavailable, SIGTERM asks the local agent pool to stop
+  # gracefully. Check the agent-provided PID before signalling anything.
+  local pid="${BUILDKITE_AGENT_PID:-}" command_name
+  if [[ "$pid" =~ ^[0-9]+$ ]] && (( pid > 1 )); then
+    command_name="$(ps -p "$pid" -o comm= 2>/dev/null)" || command_name=""
+    if [[ "${command_name##*/}" == "buildkite-agent" ]]; then
+      echo "Agent stop API failed; signalling local agent $pid to stop gracefully" >&2
+      if kill -TERM "$pid"; then
+        return 0
+      fi
+    fi
+  fi
+  echo "ERROR: could not stop the agent; operator intervention is required" >&2
+  return 1
+}
+
 clean_disposable_checkout() {
   # Validate before changing cwd or running either destructive command.
   validate_cleanup_path || return 1
@@ -66,9 +96,7 @@ clean_disposable_checkout() {
     echo "Checkout is unusable; stopping this agent before it can accept another job" >&2
     # This supported agent command requests a graceful stop after the current job.
     # It uses the job's agent access token, not a new credential or sudo grant.
-    if ! buildkite-agent stop; then
-      echo "ERROR: could not stop the agent; operator intervention is required" >&2
-    fi
+    stop_dirty_agent || true
     return 1
   fi
 }

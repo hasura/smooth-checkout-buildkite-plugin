@@ -63,7 +63,7 @@ assert_not_logged() {
   fi
 }
 reset() {
-  unset FAIL_REMOVE STOP_RC
+  unset FAIL_REMOVE STOP_RC BUILDKITE_AGENT_PID
   "$REAL_CHMOD" -R u+rwX "$BUILDKITE_BUILD_PATH" 2>/dev/null || true
   "$REAL_RM" -rf "$BUILDKITE_BUILD_PATH/checkout"
   : >"$COMMAND_LOG"
@@ -135,6 +135,42 @@ expect_failure pre-exit
 grep -q 'operator intervention is required' "$ROOT/output"
 check "failed stop request is reported and does not turn cleanup green"
 
+reset
+if command -v python3 >/dev/null 2>&1; then
+  mkdir -p "$BUILDKITE_BUILD_CHECKOUT_PATH/data"
+  python3 - "$ROOT/fake-agent-ready" <<'PYTEST' &
+import ctypes, signal, sys, time
+ctypes.CDLL(None).prctl(15, b"buildkite-agent", 0, 0, 0)
+signal.signal(signal.SIGTERM, lambda *_: sys.exit(0))
+open(sys.argv[1], "w").close()
+time.sleep(30)
+PYTEST
+  fake_agent=$!
+  for _ in $(seq 1 100); do
+    [[ -f "$ROOT/fake-agent-ready" ]] && break
+    sleep 0.01
+  done
+  export BUILDKITE_AGENT_PID="$fake_agent" FAIL_REMOVE=true STOP_RC=1
+  expect_failure pre-exit
+  grep -q 'signalling local agent' "$ROOT/output"
+  wait "$fake_agent"
+  check "failed API request stops the verified local agent with SIGTERM"
+fi
+
+reset
+export BUILDKITE_BUILD_CHECKOUT_PATH="$ROOT/missing-outside"
+expect_failure checkout
+test ! -e "$BUILDKITE_BUILD_CHECKOUT_PATH"
+test ! -s "$COMMAND_LOG"
+check "outside-build-root checkout is rejected even when it does not exist"
+
+export BUILDKITE_BUILD_CHECKOUT_PATH="$BUILDKITE_BUILD_PATH/new/../../outside-dot"
+expect_failure checkout
+test ! -e "$ROOT/outside-dot"
+test ! -s "$COMMAND_LOG"
+check "dot components cannot escape the build root"
+
+export BUILDKITE_BUILD_CHECKOUT_PATH="$BUILDKITE_BUILD_PATH/checkout"
 reset
 mkdir -p "$ROOT/outside"
 touch "$ROOT/outside/keep"
