@@ -160,15 +160,6 @@ It does not require passwordless sudo. If the stop request itself fails, the hoo
 reports that operator intervention is required. Other plugin users keep the
 existing checkout and cleanup behaviour unless they opt in.
 
-```yaml
-- hasura/smooth-checkout#<commit-or-release>:
-    repos:
-      - config:
-          - url: git@github.com:hasura/promptql-cloud.git
-    interpolate_checkout_path: "$$BUILDKITE_BUILD_PATH/promptql-cloud-ci"
-    delete_checkout: true
-    clean_checkout: true
-```
 
 ## Contributing
   - Fork this repo and clone on your machine:
