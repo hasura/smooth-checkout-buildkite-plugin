@@ -55,6 +55,13 @@ check() {
   echo "ok - $1"
   pass=$((pass + 1))
 }
+assert_not_logged() {
+  if grep -q "$1" "$COMMAND_LOG"; then
+    echo "unexpected command: $1" >&2
+    cat "$COMMAND_LOG" >&2
+    exit 1
+  fi
+}
 reset() {
   unset FAIL_REMOVE STOP_RC
   "$REAL_CHMOD" -R u+rwX "$BUILDKITE_BUILD_PATH" 2>/dev/null || true
@@ -78,7 +85,7 @@ touch "$BUILDKITE_BUILD_CHECKOUT_PATH/data/postgres/PG_VERSION"
 run_hook checkout
 test -d "$BUILDKITE_BUILD_CHECKOUT_PATH/.git"
 test ! -e "$BUILDKITE_BUILD_CHECKOUT_PATH/data"
-! grep -q 'agent stop' "$COMMAND_LOG"
+assert_not_logged 'agent stop'
 check "checkout recovers leftover data without .git before cloning"
 
 reset
@@ -89,15 +96,27 @@ touch "$BUILDKITE_BUILD_CHECKOUT_PATH/data/postgres/PG_VERSION"
 run_hook pre-exit
 test ! -e "$BUILDKITE_BUILD_CHECKOUT_PATH"
 grep -q '^chmod -R u+rwX' "$COMMAND_LOG"
-! grep -q 'agent stop' "$COMMAND_LOG"
+assert_not_logged 'agent stop'
 check "cleanup repairs read-only directories and removes the checkout"
+
+reset
+mkdir -p "$BUILDKITE_BUILD_CHECKOUT_PATH/data/postgres"
+touch "$BUILDKITE_BUILD_CHECKOUT_PATH/data/postgres/PG_VERSION"
+"$REAL_CHMOD" 500 "$BUILDKITE_BUILD_CHECKOUT_PATH/data/postgres"
+"$REAL_CHMOD" 500 "$BUILDKITE_BUILD_CHECKOUT_PATH/data"
+run_hook checkout
+test -d "$BUILDKITE_BUILD_CHECKOUT_PATH/.git"
+test ! -e "$BUILDKITE_BUILD_CHECKOUT_PATH/data"
+grep -q '^chmod -R u+rwX' "$COMMAND_LOG"
+assert_not_logged 'agent stop'
+check "pre-checkout recovery repairs read-only residue before cloning"
 
 reset
 mkdir -p "$BUILDKITE_BUILD_CHECKOUT_PATH/data"
 export FAIL_REMOVE=true
 expect_failure checkout
 grep -qx 'agent stop' "$COMMAND_LOG"
-! grep -q '^git ' "$COMMAND_LOG"
+assert_not_logged '^git '
 test -d "$BUILDKITE_BUILD_CHECKOUT_PATH/data"
 check "unrecoverable checkout stops the agent and does not clone"
 
@@ -167,7 +186,7 @@ unset BUILDKITE_PLUGIN_SMOOTH_CHECKOUT_CLEAN_CHECKOUT
 mkdir -p "$BUILDKITE_BUILD_CHECKOUT_PATH/.git"
 run_hook checkout
 grep -q '^git clean ' "$COMMAND_LOG"
-! grep -q '^agent ' "$COMMAND_LOG"
+assert_not_logged '^agent '
 check "existing consumers keep checkout reuse unless they opt in"
 
 echo "$pass tests passed"
